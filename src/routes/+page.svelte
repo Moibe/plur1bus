@@ -5,6 +5,7 @@
 	import Kpi from '$lib/components/Kpi.svelte';
 	import Palancas from '$lib/components/Palancas.svelte';
 	import GuardarEscenario from '$lib/components/GuardarEscenario.svelte';
+	import ExplicacionEscenario from '$lib/components/ExplicacionEscenario.svelte';
 	import { obtenerEscenario, simular, API_URL } from '$lib/api';
 	import { estado } from '$lib/estado.svelte';
 	import { billonesKcal, duracion, fechaLarga, mesAnio, millones, numero, pct, personas } from '$lib/formato';
@@ -32,15 +33,17 @@
 		clearTimeout(temporizador);
 		temporizador = setTimeout(async () => {
 			control?.abort();
-			control = new AbortController();
+			const mio = new AbortController();
+			control = mio;
 			cargando = true;
 			try {
-				resultado = await simular(valores, control.signal);
+				resultado = await simular(valores, mio.signal);
 				error = null;
 			} catch (e) {
 				if ((e as Error).name !== 'AbortError') error = (e as Error).message;
 			} finally {
-				cargando = false;
+				// una corrida cancelada no apaga el "simulando…" de la que la reemplazó
+				if (control === mio) cargando = false;
 			}
 		}, 250);
 	});
@@ -98,13 +101,11 @@
 <div class="simulador">
 	<aside class="panel-palancas">
 		<header class="panel-titulo">
-			<div>
-				<h2>Escenario</h2>
-				<p>{estado.origen}</p>
-			</div>
+			<h2>Escenario</h2>
 			<GuardarEscenario />
 		</header>
 		{#if estado.esquema}
+			<ExplicacionEscenario />
 			<Palancas esquema={estado.esquema} bind:valores={estado.valores} />
 		{/if}
 	</aside>
@@ -235,11 +236,6 @@
 		margin: 0;
 		font-size: 1.05rem;
 		font-weight: 600;
-	}
-	.panel-titulo p {
-		margin: 0.1rem 0 0;
-		font-size: 0.78rem;
-		color: rgba(255, 255, 255, 0.65);
 	}
 	.resultados {
 		display: flex;

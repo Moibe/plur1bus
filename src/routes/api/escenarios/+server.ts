@@ -12,9 +12,11 @@ export const GET: RequestHandler = async () => {
 export const POST: RequestHandler = async ({ request }) => {
 	const cuerpo = await request.json().catch(() => null);
 	const nombre = typeof cuerpo?.nombre === 'string' ? cuerpo.nombre.trim().slice(0, 80) : '';
+	const descripcion = typeof cuerpo?.descripcion === 'string' ? cuerpo.descripcion.trim().slice(0, 1000) : '';
 	const parametros = cuerpo?.parametros;
 	if (!nombre) error(400, 'Falta el nombre del escenario');
+	if (!descripcion) error(400, 'Falta la explicación del escenario');
 	if (!parametros || typeof parametros !== 'object' || Array.isArray(parametros)) error(400, 'Parámetros inválidos');
-	const [fila] = await db.insert(escenarios).values({ nombre, parametros }).returning();
+	const [fila] = await db.insert(escenarios).values({ nombre, descripcion, parametros }).returning();
 	return json(fila, { status: 201 });
 };

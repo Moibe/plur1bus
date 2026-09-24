@@ -17,11 +17,11 @@ class Guardados {
 		}
 	}
 
-	async guardar(nombre: string, parametros: Escenario) {
+	async guardar(nombre: string, descripcion: string, parametros: Escenario) {
 		const r = await fetch('/api/escenarios', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ nombre, parametros })
+			body: JSON.stringify({ nombre, descripcion, parametros })
 		});
 		if (!r.ok) throw new Error(await r.text());
 		await this.recargar();

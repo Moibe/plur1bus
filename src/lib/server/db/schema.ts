@@ -6,6 +6,8 @@ import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core';
 export const escenarios = sqliteTable('escenarios', {
 	id: integer('id').primaryKey({ autoIncrement: true }),
 	nombre: text('nombre').notNull(),
+	/** qué es el escenario, en palabras de quien lo guardó */
+	descripcion: text('descripcion').notNull().default(''),
 	parametros: text('parametros', { mode: 'json' }).notNull().$type<Record<string, unknown>>(),
 	creado: integer('creado', { mode: 'timestamp' })
 		.notNull()

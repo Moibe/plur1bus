@@ -8,9 +8,10 @@
   import { page } from '$app/state';
   import * as Dialog from '$lib/components/ui/dialog';
   import { Button } from '$lib/components/ui/button';
-  import { PRESETS, estado } from '$lib/estado.svelte';
+  import { PRESETS, estado, type Preset } from '$lib/estado.svelte';
   import { guardados } from '$lib/guardados.svelte';
-  import type { Escenario, EscenarioGuardado } from '$lib/tipos';
+  import { cambiosEnTexto, describirCambios } from '$lib/palancas';
+  import type { EscenarioGuardado } from '$lib/tipos';
 
   let {
     collapsed = false,
@@ -53,10 +54,26 @@
     guardados.recargar();
   });
 
-  async function aplicar(cambios: Escenario, origen: string) {
-    estado.aplicar(cambios, origen);
+  // Los guardados antes de que existiera la explicación la toman de lo que cambian.
+  function explicacionDe(g: EscenarioGuardado): string {
+    if (g.descripcion) return g.descripcion;
+    const cambios = cambiosEnTexto(describirCambios(g.parametros, estado.esquema));
+    return cambios ? `Cambia: ${cambios}.` : 'Igual al canon.';
+  }
+
+  async function irA() {
     if (page.url.pathname !== '/') await goto('/');
   }
+  function aplicarPreset(p: Preset) {
+    estado.aplicar(p.cambios, { nombre: p.nombre, explicacion: p.explicacion });
+    irA();
+  }
+  function aplicarGuardado(g: EscenarioGuardado) {
+    estado.aplicar(g.parametros, { nombre: g.nombre, explicacion: explicacionDe(g), guardado: true });
+    irA();
+  }
+  const activo = (nombre: string, guardado: boolean) =>
+    estado.origen.nombre === nombre && estado.origen.guardado === guardado ? 'page' : undefined;
 
   let porBorrar = $state<EscenarioGuardado | null>(null);
   let borrando = $state(false);
@@ -88,15 +105,12 @@
     <nav>
       <span class="nav-titulo">Escenarios</span>
       {#each PRESETS as p (p.nombre)}
-        <button
-          type="button"
-          class="nav-item"
-          title={p.descripcion}
-          aria-current={estado.origen === p.nombre ? 'page' : undefined}
-          onclick={() => aplicar(p.cambios, p.nombre)}
-        >
+        <button type="button" class="nav-item" aria-current={activo(p.nombre, false)} onclick={() => aplicarPreset(p)}>
           <span class="nav-ico" aria-hidden="true"></span>
-          <span>{p.nombre}</span>
+          <span class="nav-texto">
+            <span class="nav-nombre">{p.nombre}</span>
+            <span class="nav-resumen">{p.resumen}</span>
+          </span>
         </button>
       {/each}
 
@@ -107,10 +121,13 @@
         <span class="nav-vacio">Todavía no guardas ninguno.</span>
       {/if}
       {#each guardados.lista as g (g.id)}
-        <div class="guardado" aria-current={estado.origen === g.nombre ? 'page' : undefined}>
-          <button type="button" class="nav-item" onclick={() => aplicar(g.parametros, g.nombre)}>
+        <div class="guardado" aria-current={activo(g.nombre, true)}>
+          <button type="button" class="nav-item" onclick={() => aplicarGuardado(g)}>
             <span class="nav-ico" aria-hidden="true"></span>
-            <span>{g.nombre}</span>
+            <span class="nav-texto">
+              <span class="nav-nombre">{g.nombre}</span>
+              <span class="nav-resumen recortado">{explicacionDe(g)}</span>
+            </span>
           </button>
           <button type="button" class="borrar" aria-label={`Borrar ${g.nombre}`} onclick={() => (porBorrar = g)}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
@@ -240,9 +257,9 @@
     text-align: left;
     cursor: pointer;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.6rem;
-    padding: 0.7rem 0.95rem;
+    padding: 0.6rem 0.9rem;
     color: rgba(255, 255, 255, 0.92);
     text-decoration: none;
     font-size: 0.95rem;
@@ -251,9 +268,31 @@
     border: 1px solid transparent;
     transition: background 0.18s ease, border-color 0.18s ease;
   }
+  .nav-texto {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+  .nav-resumen {
+    /* ancho acotado: si no, max-content estira la sidebar hasta su tope */
+    max-width: 15.5rem;
+    font-size: 0.74rem;
+    line-height: 1.3;
+    letter-spacing: 0;
+    color: rgba(255, 255, 255, 0.62);
+  }
+  .nav-resumen.recortado {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
   .nav-ico {
     width: 16px;
     height: 16px;
+    margin-top: 0.15rem;
     border-radius: 5px;
     flex-shrink: 0;
     background: rgba(147, 197, 253, 0.55);

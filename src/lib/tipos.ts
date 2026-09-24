@@ -126,6 +126,8 @@ export interface Fuentes {
 export interface EscenarioGuardado {
 	id: number;
 	nombre: string;
+	/** qué es el escenario; vacío solo en los guardados antes de que existiera este campo */
+	descripcion: string;
 	parametros: Escenario;
 	creado: string;
 }

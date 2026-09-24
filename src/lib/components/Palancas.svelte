@@ -3,7 +3,7 @@
 	// (GET /escenario): rangos, pasos, etiquetas y textos viven en el motor.
 	import { Slider } from '$lib/components/ui/slider';
 	import { Switch } from '$lib/components/ui/switch';
-	import { MESES, numero, pct } from '$lib/formato';
+	import { ETIQUETAS_OPCION, mostrarValor as mostrar } from '$lib/palancas';
 	import type { Escenario, EsquemaEscenario, Palanca } from '$lib/tipos';
 
 	let { esquema, valores = $bindable() }: { esquema: EsquemaEscenario; valores: Escenario } = $props();
@@ -24,32 +24,8 @@
 	const esNullable = (p: Palanca) => !!p.anyOf?.some((t) => t.type === 'null');
 	const tipo = (p: Palanca) => p.type ?? p.anyOf?.find((t) => t.type !== 'null')?.type;
 
-	function mostrar(p: Palanca, v: unknown): string {
-		if (typeof v !== 'number') return String(v ?? '');
-		switch (p.formato) {
-			case 'mes':
-				return MESES[v - 1];
-			case 'pct':
-				return pct(v);
-			case 'x':
-				return `${numero(v, 1)}×`;
-			case 'kcal':
-				return `${numero(v)} kcal`;
-			default:
-				return numero(v, p.paso && p.paso < 1 ? 2 : 0);
-		}
-	}
-
 	// Rango para palancas opcionales sin máximo razonable en el esquema.
 	const rangoNullable = (p: Palanca): [number, number] => [p.minimum ?? 0, Math.min(p.maximum ?? 5000, 4000)];
-
-	const ETIQUETAS_OPCION: Record<string, string> = {
-		completa: 'Completa',
-		fija: 'Fija',
-		estirar: 'Estirar',
-		liberar: 'Liberar',
-		alimentar: 'Alimentar'
-	};
 </script>
 
 <div class="palancas">
