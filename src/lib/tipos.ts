@@ -28,11 +28,13 @@ export interface Resumen {
 	fecha_inicio_hambruna: string | null;
 	dia_mitad_poblacion: number | null;
 	fecha_mitad_poblacion: string | null;
-	poblacion_10_anios: number | null;
+	poblacion_10_anios: number;
 	poblacion_final: number;
 	poblacion_minima: number;
 	dia_poblacion_minima: number;
-	capacidad_de_carga: number | null;
+	capacidad_de_carga: number;
+	/** años desde la Unión que promedia la capacidad de carga (cuando la fruta caída ya llegó a su piso) */
+	capacidad_ventana_anios: [number, number];
 	muertes_hambre: number;
 	muertes_naturales: number;
 	nacimientos: number;
@@ -51,6 +53,8 @@ export interface Fuente {
 
 export interface Serie {
 	dia: number[];
+	/** días que cubre cada punto (7, salvo la última semana, que puede ser parcial) */
+	dias_tramo: number[];
 	fecha: string[];
 	poblacion: number[];
 	poblacion_cohortes: Record<string, number[]>;

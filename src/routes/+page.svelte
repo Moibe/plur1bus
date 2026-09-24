@@ -75,7 +75,9 @@
 					clave: g.clave,
 					nombre: g.nombre,
 					color: g.color,
-					valores: r.serie.dia.map((_, i) => g.pools.reduce((acc, p) => acc + (r.serie.consumo_kcal[p]?.[i] ?? 0), 0) / 7)
+					valores: r.serie.dia.map(
+						(_, i) => g.pools.reduce((acc, p) => acc + (r.serie.consumo_kcal[p]?.[i] ?? 0), 0) / r.serie.dias_tramo[i]
+					)
 				}))
 			: []
 	);
@@ -118,7 +120,8 @@
 					<span class="hero-etiqueta">La hambruna empieza en</span>
 					<span class="hero-valor">{duracion(s.dia_inicio_hambruna)}</span>
 					<span class="hero-detalle">
-						{fechaLarga(s.fecha_inicio_hambruna)}, con {numero(s.dias_de_comida_al_inicio)} días de comida guardada al inicio.
+						{fechaLarga(s.fecha_inicio_hambruna)}: el día en que el hambre empieza a matar más que todas las demás causas juntas. Al
+						inicio había {numero(s.dias_de_comida_al_inicio)} días de comida guardada.
 					</span>
 				{:else}
 					<span class="hero-etiqueta">En {anios} años</span>
@@ -136,12 +139,12 @@
 				<Kpi
 					etiqueta="Población a 10 años"
 					valor={personas(s.poblacion_10_anios)}
-					detalle={s.poblacion_10_anios != null ? `${pct(s.poblacion_10_anios / s.poblacion_inicial, 1)} de la colmena` : 'horizonte menor a 10 años'}
+					detalle={`${pct(s.poblacion_10_anios / s.poblacion_inicial, 1)} de la colmena`}
 				/>
 				<Kpi
 					etiqueta="Capacidad de carga"
 					valor={personas(s.capacidad_de_carga)}
-					detalle="promedio de los últimos 2 años"
+					detalle={`largo plazo: promedio entre los años ${numero(s.capacidad_ventana_anios[0], 1)} y ${numero(s.capacidad_ventana_anios[1], 1)}`}
 				/>
 				<Kpi
 					etiqueta="¿Acierta Koumba?"
@@ -171,7 +174,7 @@
 
 			<GraficaLineas
 				titulo="Ración y reserva corporal"
-				subtitulo="Ración: fracción de lo que se necesita. Reserva: lo que le queda al cuerpo promedio."
+				subtitulo="Ración: lo que come la gente frente a su requerimiento normal. Reserva: lo que le queda al cuerpo promedio."
 				x={r.serie.fecha}
 				series={seriesCuerpo}
 				formatoY={(v) => pct(v)}
