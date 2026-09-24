@@ -16,6 +16,11 @@ export const PRESETS: Preset[] = [
 		cambios: {}
 	},
 	{
+		nombre: 'La ración de Cena',
+		descripcion: 'Cena come 2,400 kcal pesando ~114 kg: 21 kcal por kilo. Escalado a una persona promedio es ~67% de lo que necesita.',
+		cambios: { racion_modo: 'fija', racion_fraccion: 0.67 }
+	},
+	{
 		nombre: 'La colmena estira 10 años',
 		descripcion: 'Racionan para que la comida dure lo que dice Koumba.',
 		cambios: { racion_modo: 'estirar', horizonte_estirar_anios: 10 }
