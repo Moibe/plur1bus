@@ -164,3 +164,168 @@
 		@apply bg-background text-foreground;
 	}
 }
+
+/* --- Gráficas (dataviz) ---------------------------------------------------------
+   La app es oscura siempre (glass sobre el gradiente violeta), así que las tarjetas
+   de gráfica llevan una superficie índigo sólida contra la que se validó la paleta
+   (dataviz validate_palette.js, modo dark, superficie #171433: todo PASS). */
+:root {
+	--viz-surface: #171433;
+	--viz-ink: #ffffff;
+	--viz-ink-2: #c3c2b7;
+	--viz-muted: #9d9bb5;
+	--viz-grid: rgba(255, 255, 255, 0.08);
+	--viz-axis: rgba(255, 255, 255, 0.22);
+	/* categóricos, orden fijo (slots 1-5 dark de la paleta de referencia) */
+	--serie-1: #3987e5;
+	--serie-2: #d95926;
+	--serie-3: #199e70;
+	--serie-4: #c98500;
+	--serie-5: #d55181;
+	/* acento de marca (no es color de dato) */
+	--amarillo-pluribus: #facc15;
+}
+
+.tarjeta-grafica {
+	margin: 0;
+	padding: 1rem 1.1rem 0.9rem;
+	background: rgba(23, 20, 51, 0.92);
+	border: 1px solid rgba(255, 255, 255, 0.14);
+	border-radius: 14px;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+	min-width: 0;
+}
+.tarjeta-grafica figcaption {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 0.5rem;
+}
+.tarjeta-grafica h4 {
+	margin: 0;
+	font-size: 0.98rem;
+	font-weight: 600;
+	color: var(--viz-ink);
+}
+.tarjeta-grafica figcaption p {
+	margin: 0.15rem 0 0;
+	font-size: 0.78rem;
+	color: var(--viz-ink-2);
+}
+.ver-tabla {
+	flex-shrink: 0;
+	padding: 0.25rem 0.65rem;
+	font-size: 0.75rem;
+	color: var(--viz-ink-2);
+	background: transparent;
+	border: 1px solid rgba(255, 255, 255, 0.18);
+	border-radius: 999px;
+	cursor: pointer;
+}
+.ver-tabla:hover {
+	color: #fff;
+	background: rgba(255, 255, 255, 0.06);
+}
+.leyenda {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.35rem 1rem;
+	margin: 0 0 0.5rem;
+	padding: 0;
+	list-style: none;
+	font-size: 0.78rem;
+	color: var(--viz-ink-2);
+}
+.leyenda li {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+}
+.clave-linea {
+	display: inline-block;
+	width: 14px;
+	height: 2px;
+	border-radius: 2px;
+	flex-shrink: 0;
+}
+.clave-area {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	border-radius: 3px;
+	flex-shrink: 0;
+}
+.tooltip {
+	position: absolute;
+	top: 8px;
+	z-index: 5;
+	min-width: 170px;
+	padding: 0.55rem 0.7rem;
+	background: rgba(12, 10, 30, 0.96);
+	border: 1px solid rgba(255, 255, 255, 0.16);
+	border-radius: 10px;
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+	pointer-events: none;
+	font-size: 0.78rem;
+}
+.tt-fecha {
+	margin-bottom: 0.35rem;
+	color: var(--viz-ink-2);
+}
+.tt-fila {
+	display: flex;
+	align-items: center;
+	gap: 0.45rem;
+	line-height: 1.6;
+}
+.tt-fila strong {
+	color: var(--viz-ink);
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+.tt-nombre {
+	color: var(--viz-ink-2);
+}
+.tt-total {
+	margin-top: 0.2rem;
+	padding-top: 0.25rem;
+	border-top: 1px solid rgba(255, 255, 255, 0.12);
+	padding-left: calc(10px + 0.45rem);
+}
+.tabla-scroll {
+	max-height: 280px;
+	overflow: auto;
+}
+.tabla-scroll table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.78rem;
+	font-variant-numeric: tabular-nums;
+}
+.tabla-scroll th,
+.tabla-scroll td {
+	padding: 0.3rem 0.5rem;
+	text-align: right;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+	white-space: nowrap;
+}
+.tabla-scroll th:first-child,
+.tabla-scroll td:first-child {
+	text-align: left;
+}
+.tabla-scroll th {
+	position: sticky;
+	top: 0;
+	background: var(--viz-surface);
+	color: var(--viz-ink-2);
+	font-weight: 500;
+}
+
+/* Modales (shadcn Dialog) con el mismo vidrio índigo de las tarjetas. */
+.modal-glass {
+	background: rgba(23, 20, 51, 0.97) !important;
+	color: #fff !important;
+	border: 1px solid rgba(255, 255, 255, 0.16);
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}

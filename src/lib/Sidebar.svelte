@@ -1,7 +1,17 @@
 <script lang="ts">
   // Barra lateral "de vidrio" con el mismo tilt 3D que la superior. Incluye el handle
   // para replegar/mostrar. Publica su ancho real a la variable CSS --sidebar-width
-  // para que el panel de contenido se ajuste solo. Items de ejemplo: reemplázalos.
+  // para que el panel de contenido se ajuste solo. Aquí viven los presets del
+  // simulador y los escenarios guardados (SQLite del front).
+  import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
+  import { page } from '$app/state';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import { Button } from '$lib/components/ui/button';
+  import { PRESETS, estado } from '$lib/estado.svelte';
+  import { guardados } from '$lib/guardados.svelte';
+  import type { Escenario, EscenarioGuardado } from '$lib/tipos';
+
   let {
     collapsed = false,
     toggleCollapsed
@@ -38,6 +48,33 @@
     tiltY = 0;
     toggleCollapsed();
   }
+
+  onMount(() => {
+    guardados.recargar();
+  });
+
+  async function aplicar(cambios: Escenario, origen: string) {
+    estado.aplicar(cambios, origen);
+    if (page.url.pathname !== '/') await goto('/');
+  }
+
+  let porBorrar = $state<EscenarioGuardado | null>(null);
+  let borrando = $state(false);
+  let errorBorrar = $state<string | null>(null);
+
+  async function confirmarBorrado() {
+    if (!porBorrar) return;
+    borrando = true;
+    try {
+      await guardados.borrar(porBorrar.id);
+      porBorrar = null;
+      errorBorrar = null;
+    } catch (e) {
+      errorBorrar = `No se pudo borrar: ${(e as Error).message}`;
+    } finally {
+      borrando = false;
+    }
+  }
 </script>
 
 {#if !collapsed}
@@ -49,18 +86,37 @@
     onmouseleave={handleLeave}
   >
     <nav>
-      <a href="/" class="nav-item" aria-current="page">
-        <span class="nav-ico" aria-hidden="true"></span>
-        <span>Sección uno</span>
-      </a>
-      <a href="/seccion-dos" class="nav-item">
-        <span class="nav-ico" aria-hidden="true"></span>
-        <span>Sección dos</span>
-      </a>
-      <a href="/seccion-tres" class="nav-item">
-        <span class="nav-ico" aria-hidden="true"></span>
-        <span>Sección tres</span>
-      </a>
+      <span class="nav-titulo">Escenarios</span>
+      {#each PRESETS as p (p.nombre)}
+        <button
+          type="button"
+          class="nav-item"
+          title={p.descripcion}
+          aria-current={estado.origen === p.nombre ? 'page' : undefined}
+          onclick={() => aplicar(p.cambios, p.nombre)}
+        >
+          <span class="nav-ico" aria-hidden="true"></span>
+          <span>{p.nombre}</span>
+        </button>
+      {/each}
+
+      <span class="nav-titulo">Guardados</span>
+      {#if guardados.error}
+        <span class="nav-vacio">{guardados.error}</span>
+      {:else if !guardados.lista.length}
+        <span class="nav-vacio">Todavía no guardas ninguno.</span>
+      {/if}
+      {#each guardados.lista as g (g.id)}
+        <div class="guardado" aria-current={estado.origen === g.nombre ? 'page' : undefined}>
+          <button type="button" class="nav-item" onclick={() => aplicar(g.parametros, g.nombre)}>
+            <span class="nav-ico" aria-hidden="true"></span>
+            <span>{g.nombre}</span>
+          </button>
+          <button type="button" class="borrar" aria-label={`Borrar ${g.nombre}`} onclick={() => (porBorrar = g)}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+          </button>
+        </div>
+      {/each}
     </nav>
 
     <div class="sidebar-footer">
@@ -74,6 +130,20 @@
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg>
   </button>
 {/if}
+
+<Dialog.Root open={porBorrar !== null} onOpenChange={(abierto) => { if (!abierto) porBorrar = null; }}>
+  <Dialog.Content class="modal-glass">
+    <Dialog.Header>
+      <Dialog.Title>¿Borrar «{porBorrar?.nombre}»?</Dialog.Title>
+      <Dialog.Description>El escenario guardado se elimina para siempre.</Dialog.Description>
+    </Dialog.Header>
+    {#if errorBorrar}<p class="error-borrar">{errorBorrar}</p>{/if}
+    <Dialog.Footer>
+      <Button variant="ghost" onclick={() => (porBorrar = null)}>Cancelar</Button>
+      <Button variant="destructive" disabled={borrando} onclick={confirmarBorrado}>{borrando ? 'Borrando…' : 'Borrar'}</Button>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog.Root>
 
 <style>
   .sidebar {
@@ -113,7 +183,62 @@
   nav::-webkit-scrollbar {
     display: none;
   }
+  .nav-titulo {
+    margin: 0.6rem 0 0.1rem 0.4rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+  }
+  .nav-titulo:first-child {
+    margin-top: 0;
+  }
+  .nav-vacio {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.55);
+    max-width: 240px;
+  }
+  .guardado {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .guardado .nav-item {
+    flex: 1;
+    min-width: 0;
+  }
+  .guardado[aria-current='page'] .nav-item {
+    color: #fff;
+    background: rgba(250, 204, 21, 0.16);
+    border-color: rgba(250, 204, 21, 0.55);
+  }
+  .borrar {
+    flex-shrink: 0;
+    display: inline-flex;
+    padding: 0.35rem;
+    color: rgba(255, 255, 255, 0.6);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .borrar:hover {
+    color: #fff;
+    background: rgba(208, 59, 59, 0.2);
+    border-color: rgba(208, 59, 59, 0.5);
+  }
+  .error-borrar {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #f4a3a3;
+  }
   .nav-item {
+    width: 100%;
+    background: transparent;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
     display: flex;
     align-items: center;
     gap: 0.6rem;

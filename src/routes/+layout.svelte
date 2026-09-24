@@ -49,10 +49,10 @@
   }
   :global(body) {
     min-height: 100vh;
-    /* Violeta colmena (135°, dos paradas) + halo amarillo Pluribus (el del póster) en la esquina. */
-    background:
-      radial-gradient(ellipse at 100% 100%, rgba(250, 204, 21, 0.42) 0%, rgba(250, 204, 21, 0) 55%),
-      linear-gradient(135deg, #7c3aed 0%, #1e1b4b 100%);
+    /* Violeta colmena (#7c3aed → #1e1b4b) que desemboca en el amarillo Pluribus del póster.
+       Interpolado en oklch para que el paso índigo → amarillo pase por magenta y naranja
+       (un atardecer) en lugar de mezclarse en café. */
+    background: linear-gradient(135deg in oklch, #7c3aed 0%, #1e1b4b 62%, #facc15 100%);
     background-attachment: fixed;
     color: rgba(255, 255, 255, 0.95);
     font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;

@@ -1,14 +1,15 @@
 import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core';
 
-// Tabla de EJEMPLO — reemplázala por las tablas reales de tu app. Después corre
-// `npm run db:generate` (crea la migración en ./drizzle) y `npm run db:migrate`.
-export const items = sqliteTable('items', {
+// Escenarios que el usuario guarda desde el simulador. `parametros` es el JSON
+// con solo las palancas que difieren del default (así un default que cambie en
+// la API se refleja en los escenarios viejos).
+export const escenarios = sqliteTable('escenarios', {
 	id: integer('id').primaryKey({ autoIncrement: true }),
-	texto: text('texto').notNull(),
-	hecho: integer('hecho', { mode: 'boolean' }).notNull().default(false),
+	nombre: text('nombre').notNull(),
+	parametros: text('parametros', { mode: 'json' }).notNull().$type<Record<string, unknown>>(),
 	creado: integer('creado', { mode: 'timestamp' })
 		.notNull()
 		.$defaultFn(() => new Date())
 });
 
-export type Item = typeof items.$inferSelect;
+export type EscenarioGuardado = typeof escenarios.$inferSelect;

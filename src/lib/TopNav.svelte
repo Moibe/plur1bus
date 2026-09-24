@@ -1,6 +1,6 @@
 <script lang="ts">
   // Barra superior "de vidrio" con tilt 3D al pasar el mouse + responsive (en móvil
-  // colapsa a solo-íconos). Los items son de ejemplo: reemplázalos por los de tu app.
+  // colapsa a solo-íconos).
   import { page } from '$app/state';
 
   let tiltX = $state(0);
@@ -19,11 +19,10 @@
     tiltY = 0;
   }
 
-  // Edita estos items por las secciones reales de tu app.
   const items = [
-    { href: '/', label: 'Inicio' },
-    { href: '/seccion-dos', label: 'Sección dos' },
-    { href: '/seccion-tres', label: 'Sección tres' }
+    { href: '/', label: 'Simulador' },
+    { href: '/supuestos', label: 'Supuestos' },
+    { href: '/canon', label: 'Canon' }
   ];
 </script>
 
