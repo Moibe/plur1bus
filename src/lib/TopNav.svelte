@@ -2,6 +2,8 @@
   // Barra superior "de vidrio" con tilt 3D al pasar el mouse + responsive (en móvil
   // colapsa a solo-íconos).
   import { page } from '$app/state';
+  import { _ } from 'svelte-i18n';
+  import SelectorIdioma from '$lib/components/SelectorIdioma.svelte';
 
   let tiltX = $state(0);
   let tiltY = $state(0);
@@ -20,9 +22,9 @@
   }
 
   const items = [
-    { href: '/', label: 'Simulador' },
-    { href: '/supuestos', label: 'Supuestos' },
-    { href: '/canon', label: 'Canon' }
+    { href: '/', clave: 'nav.simulador' },
+    { href: '/supuestos', clave: 'nav.supuestos' },
+    { href: '/canon', clave: 'nav.canon' }
   ];
 </script>
 
@@ -33,7 +35,7 @@
   onmousemove={handleMove}
   onmouseleave={handleLeave}
 >
-  <a href="/" class="brand" aria-label="Inicio">
+  <a href="/" class="brand" aria-label={$_('nav.inicio')}>
     <span class="brand-ico" aria-hidden="true"></span>
     <span class="brand-title">Plur1bus</span>
   </a>
@@ -42,10 +44,12 @@
     {#each items as it (it.href)}
       <a href={it.href} class="nav-item" aria-current={page.url.pathname === it.href ? 'page' : undefined}>
         <span class="nav-ico" aria-hidden="true"></span>
-        <span class="nav-label">{it.label}</span>
+        <span class="nav-label">{$_(it.clave)}</span>
       </a>
     {/each}
   </nav>
+
+  <SelectorIdioma />
 </header>
 
 <style>
@@ -106,9 +110,9 @@
     display: flex;
     align-items: center;
     gap: 0.3rem;
-    margin-left: 1.25rem;
-    padding-left: 1.25rem;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    margin-inline-start: 1.25rem;
+    padding-inline-start: 1.25rem;
+    border-inline-start: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .nav-item {
@@ -157,8 +161,8 @@
       display: none;
     }
     .topnav-nav {
-      margin-left: 0.5rem;
-      padding-left: 0.5rem;
+      margin-inline-start: 0.5rem;
+      padding-inline-start: 0.5rem;
       gap: 0.1rem;
     }
     .nav-item {
@@ -173,8 +177,8 @@
       padding: 0 0.4rem;
     }
     .topnav-nav {
-      margin-left: 0.35rem;
-      padding-left: 0.35rem;
+      margin-inline-start: 0.35rem;
+      padding-inline-start: 0.35rem;
     }
     .nav-item {
       padding: 0.45rem 0.35rem;

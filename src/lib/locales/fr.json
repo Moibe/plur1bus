@@ -1,0 +1,223 @@
+{
+	"nav": {
+		"inicio": "Accueil",
+		"simulador": "Simulateur",
+		"supuestos": "Hypothèses",
+		"canon": "Canon"
+	},
+	"idioma": {
+		"cambiar": "Changer de langue",
+		"actual": "Langue : {idioma}"
+	},
+	"sidebar": {
+		"escenarios": "Scénarios",
+		"guardados": "Enregistrés",
+		"vacio": "Vous n’en avez encore enregistré aucun.",
+		"error_cargar": "Impossible de charger les scénarios enregistrés ({detalle})",
+		"borrar_aria": "Supprimer {nombre}",
+		"replegar": "Replier la barre",
+		"mostrar": "Afficher la barre",
+		"cambia": "Modifie : {cambios}.",
+		"igual_canon": "Identique au canon."
+	},
+	"borrar": {
+		"titulo": "Supprimer « {nombre} » ?",
+		"descripcion": "Le scénario enregistré sera définitivement supprimé.",
+		"cancelar": "Annuler",
+		"confirmar": "Supprimer",
+		"borrando": "Suppression…",
+		"error": "Impossible de supprimer : {detalle}"
+	},
+	"presets": {
+		"canon": {
+			"nombre": "Canon strict",
+			"resumen": "Ce que montre la série, sans rien toucher.",
+			"explicacion": "La ruche ne peut ni tuer ni blesser aucune forme de vie, pas même une plante : elle ne récolte pas, ne pêche pas et n’abat pas d’animaux. Elle mange ce qui était déjà stocké, les fruits qui tombent d’eux-mêmes, les animaux qui meurent de mort naturelle et le HDP des humains qui meurent. Elle relâche le bétail et les animaux de compagnie, continue de traire les vaches, et chacun mange ce dont il a besoin jusqu’à épuisement. La Jonction a lieu en juillet, le mois de l’année où il y a le moins de grain stocké ; les indices du canon pointent vers la fin du printemps ou l’été."
+		},
+		"cena": {
+			"nombre": "La ration de Cena",
+			"resumen": "Dès le premier jour, la ration qu’implique la vidéo de Cena : ~67 %.",
+			"explicacion": "Dans la vidéo de l’épisode 6, John Cena dit que quelqu’un de son gabarit a besoin de huit briques de 300 kcal par jour : 2 400 kcal. Mais Cena pèse environ 114 kg et un corps comme le sien dépense près de 3 000, donc ce régime est déjà un déficit de ~21 kcal par kilo. Ramenée à une personne moyenne, cette ration équivaut à ~67 % de ses besoins. Ici, la ruche distribue cette ration fixe dès le premier jour : la nourriture dure plus longtemps, mais ceux qui étaient déjà minces commencent à mourir tôt."
+		},
+		"estirar": {
+			"nombre": "La ruche étire sur 10 ans",
+			"resumen": "Ils rationnent pour que la nourriture tienne les dix ans de Koumba.",
+			"explicacion": "Koumba dit à Carol que, selon la ruche elle-même, la majorité mourra de faim dans les dix prochaines années. Ici, la ruche planifie : chaque jour, elle calcule la ration qui ferait tenir la nourriture stockée, plus ce qui continuera d’arriver (fruits, HDP, viande, lait), jusqu’au bout des dix ans, sans jamais descendre sous 60 % des besoins. Tout le monde mange moins dès le début : la faim arrive donc plus tôt pour les plus vulnérables, mais l’effondrement général est retardé."
+		},
+		"diciembre": {
+			"nombre": "Jonction en décembre",
+			"resumen": "Juste après la récolte de l’hémisphère Nord : greniers pleins.",
+			"explicacion": "Le canon ne dit pas à quelle date a eu lieu la Jonction, et le grain stocké dans le monde varie beaucoup selon le calendrier des récoltes : il y en a ~1 385 millions de tonnes au 1er juillet et ~2 185 au 1er décembre. Avec une Jonction en décembre, la ruche démarre avec environ 200 jours de nourriture en plus. Tout le reste est identique au canon."
+		},
+		"ganado": {
+			"nombre": "Nourrir le bétail",
+			"resumen": "Les animaux ne sont pas relâchés : ils mangent le même grain que les gens.",
+			"explicacion": "Dans la série, la ruche relâche le bétail : les villageois de Kusimayu le libèrent quand ils la rejoignent. Ici, pour ne pas laisser les animaux mourir de faim, la ruche continue de les nourrir comme avant. Mais aujourd’hui, le bétail mange ~1 100 millions de tonnes de céréales par an, plus que ce que les gens mangent directement : la nourriture stockée dure donc moitié moins longtemps (de ~589 à ~288 jours). En contrepartie, davantage d’animaux meurent à la ferme et leur viande est mieux récupérée."
+		},
+		"resquicios": {
+			"nombre": "Avec les failles",
+			"resumen": "Lectures généreuses de la règle : mises bas, œufs, miel et grain de plantes mortes.",
+			"explicacion": "La règle interdit de tuer ou de blesser, mais certaines choses pourraient rester dans ses limites : laisser le bétail continuer à mettre bas pour que le lait ne s’épuise jamais, ramasser les œufs et le miel (pour cela, la ruche continue de nourrir le bétail), récupérer le grain des cultures déjà semées quand la plante meurt d’elle-même à maturité (70 % de ce qui aurait été récolté) et, à partir de la deuxième année, semer et ne récolter que lorsque la plante est déjà sèche (50 % d’une récolte normale). Ce n’est pas canon : dans la vidéo, Cena dit qu’ils ne peuvent récolter ni blé, ni maïs, ni riz. Cela sert à montrer que le problème vient des règles, pas de la nourriture."
+		}
+	},
+	"escenario": {
+		"titulo": "Scénario",
+		"guardado": "enregistré",
+		"modificado": "modifié",
+		"que_cambia": "Ce qui change par rapport au canon",
+		"nada": "Rien : c’est la référence à laquelle on compare les autres scénarios.",
+		"movido": "Vous avez modifié des leviers après l’avoir chargé : la liste inclut déjà vos changements."
+	},
+	"guardar": {
+		"boton": "Enregistrer",
+		"titulo": "Enregistrer le scénario",
+		"descripcion": "Seuls les leviers que vous avez modifiés par rapport au canon sont enregistrés.",
+		"nombre": "Nom",
+		"nombre_ejemplo": "Ex. Juin avec lait et œufs",
+		"explicacion": "Qu’est-ce que ce scénario ?",
+		"explicacion_ejemplo": "Ce que vous supposez, et pourquoi il vaut la peine d’être vu",
+		"explicacion_ayuda": "Obligatoire. Je vous ai laissé un brouillon avec ce qui change ; expliquez-le avec vos propres mots.",
+		"cancelar": "Annuler",
+		"guardando": "Enregistrement…",
+		"error": "Impossible d’enregistrer : {detalle}",
+		"borrador_igual": "Identique au canon : ne modifie aucun levier.",
+		"borrador": "Basé sur {partida}. Modifie : {cambios}.",
+		"partida_canon": "le canon",
+		"partida_otro": "« {nombre} »"
+	},
+	"palancas": {
+		"por_mes": "Par mois",
+		"automatico": "automatique",
+		"si": "Oui",
+		"no": "Non"
+	},
+	"opciones": {
+		"completa": "Complète",
+		"fija": "Fixe",
+		"estirar": "Étirer",
+		"liberar": "Libérer",
+		"alimentar": "Nourrir"
+	},
+	"simulador": {
+		"error_api": "Impossible de joindre l’API à l’adresse {url}. plur1bus-api est-il lancé ? ({detalle})",
+		"simulando": "Simulation en cours…",
+		"hero": {
+			"empieza": "La famine commence dans",
+			"detalle": "{fecha} : le jour où la faim commence à tuer plus que toutes les autres causes réunies. Au départ, il y avait {dias, plural, one {# jour} other {# jours}} de nourriture en réserve.",
+			"sin_etiqueta": "Sur {anios, plural, one {# an} other {# ans}}",
+			"sin_valor": "pas de famine",
+			"sin_detalle": "Dans ce scénario, la nourriture suffit pour tout le monde."
+		},
+		"kpi": {
+			"mitad": "Population réduite de moitié",
+			"nunca": "Jamais",
+			"mitad_detalle": "{duracion} après la Jonction",
+			"en_anios": "sur {anios, plural, one {# an} other {# ans}}",
+			"diez": "Population à 10 ans",
+			"diez_detalle": "{pct} de la ruche",
+			"carga": "Capacité de charge",
+			"carga_detalle": "long terme : moyenne entre les années {desde} et {hasta}",
+			"koumba": "Koumba a-t-il raison ?",
+			"si": "Oui",
+			"no": "Non",
+			"koumba_detalle": "{pct} meurent de faim en 10 ans"
+		},
+		"graficas": {
+			"poblacion": "Population de la ruche",
+			"poblacion_sub": "Personnes en vie à la fin de chaque semaine",
+			"poblacion_serie": "Population",
+			"hambruna": "Début de la famine",
+			"fuentes": "D’où vient la nourriture",
+			"fuentes_sub": "kcal consommées par jour, par source",
+			"cuerpo": "Ration et réserve corporelle",
+			"cuerpo_sub": "Ration : ce que mangent les gens par rapport à leurs besoins normaux. Réserve : ce qu’il reste au corps moyen.",
+			"racion": "Ration",
+			"reserva": "Réserve corporelle"
+		},
+		"grupos": {
+			"cereal": "Céréales",
+			"inventario": "Autres stocks",
+			"frescos": "Produits frais et fruits tombés",
+			"hdp": "HDP",
+			"carne": "Viande animale"
+		},
+		"tabla": {
+			"titulo": "Tout ce qui a été mangé en {anios, plural, one {# an} other {# ans}}",
+			"fuente": "Source",
+			"inicio": "Au départ",
+			"consumido": "Consommé",
+			"parte": "Part de l’alimentation",
+			"bill_kcal": "{n} billions de kcal"
+		}
+	},
+	"grafica": {
+		"ver_tabla": "Voir le tableau",
+		"ver_grafica": "Voir le graphique",
+		"escala_log": "Échelle log",
+		"escala_lineal": "Échelle linéaire",
+		"semana": "Semaine",
+		"total": "Total",
+		"aria": "{titulo}. Utilisez les flèches pour parcourir les semaines."
+	},
+	"numeros": {
+		"miles_de_millones": "{n} milliards",
+		"millones": "{n} millions",
+		"miles": "{n} mille",
+		"abrev_millones": "{n} M",
+		"abrev_miles": "{n} k",
+		"billones": "{n} billions"
+	},
+	"duracion": {
+		"dias": "{n, plural, one {# jour} other {# jours}}",
+		"meses": "{n, plural, one {# mois} other {# mois}}",
+		"anios": "{n, plural, one {# an} other {# ans}}",
+		"y": "{a} et {b}"
+	},
+	"supuestos": {
+		"titulo": "Hypothèses du modèle",
+		"intro": "Chaque nombre utilisé par le moteur, avec la plage que vous pouvez explorer et les sources qui l’étayent.",
+		"buscar": "Rechercher (p. ex. céréales, hdp, chiens)",
+		"valores": "Valeurs",
+		"col_supuesto": "Hypothèse",
+		"col_valor": "Valeur",
+		"col_rango": "Plage",
+		"col_unidad": "Unité",
+		"col_fuentes": "Sources",
+		"rango": "{bajo} à {alto}",
+		"sin_fuente": "pas encore de source",
+		"confianza": {
+			"high": "élevée",
+			"medium": "moyenne",
+			"low": "faible"
+		},
+		"tablas": "Tableaux par mois",
+		"col_tabla": "Tableau",
+		"ganado": "Bétail",
+		"col_grupo": "Groupe",
+		"col_cabezas": "Têtes",
+		"col_kcal_cabeza": "kcal comestibles par tête",
+		"col_vida": "Durée de vie naturelle (jours)",
+		"col_pienso": "Aliments pour bétail (kcal/jour)",
+		"col_pastoreo": "Pâturage",
+		"cargando": "Chargement…",
+		"error": "Impossible de lire les hypothèses depuis {url} ({detalle})"
+	},
+	"canon": {
+		"titulo": "Ce que dit le canon",
+		"intro": "La ruche ne peut ni tuer, ni blesser, ni interférer avec aucune forme de vie, plantes comprises. Elle mange ce qui existait déjà, les fruits qui tombent d’eux-mêmes, les animaux qui meurent de mort naturelle et le HDP des humains qui meurent.",
+		"error": "Impossible de lire les données depuis {url} ({detalle})",
+		"hdp_titulo": "Les calculs du HDP ne tombent pas juste",
+		"cifra_mt": "{desde}–{hasta} Mt",
+		"hdp_necesario": "de HDP par jour seraient nécessaires si tout le monde buvait la boisson du canon (8 demi-pintes à 8–12 %)",
+		"cifra_miles_t": "{n} milliers de t",
+		"hdp_disponible": "c’est ce que fournissent les décès quotidiens : {desde}–{hasta} % du nécessaire",
+		"cifra_dias_rango": "{desde}–{hasta} jours",
+		"hdp_union": "pendant lesquels les corps de la Jonction suffiraient pour cette boisson",
+		"cifra_dias": "{n} jours",
+		"hdp_mundo": "de nourriture pour le monde entier : c’est, en calories, ce que représentent les morts de la Jonction ({muertos})",
+		"hdp_nota": "Chaque corps nourrit une personne pendant environ {dias, plural, one {# jour} other {# jours}}. En calories, le HDP est presque symbolique : il sert de protéine à une minorité, pas de base de l’alimentation.",
+		"hechos": "Faits du canon",
+		"en_modelo": "Dans le modèle : {texto}",
+		"sin_hechos": "Les faits documentés du canon apparaissent ici dès que le jeu de sources est chargé dans l’API."
+	}
+}

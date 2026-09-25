@@ -1,23 +1,37 @@
 <script lang="ts">
 	// Lo que la serie dice sobre la comida de la colmena, y dónde las cuentas no cierran.
-	import { onMount } from 'svelte';
+	// Los hechos del canon llegan traducidos por la API (?lang=).
+	import { _, locale } from 'svelte-i18n';
 	import { obtenerFuentes, obtenerSupuestos, API_URL } from '$lib/api';
-	import { numero, personas } from '$lib/formato';
+	import { formato } from '$lib/formato';
 	import type { Fuentes, Supuestos } from '$lib/tipos';
 
 	let fuentes = $state<Fuentes | null>(null);
 	let supuestos = $state<Supuestos | null>(null);
+	/** detalle técnico del error; el aviso se arma en el idioma activo */
 	let error = $state<string | null>(null);
 
-	onMount(async () => {
-		try {
-			[fuentes, supuestos] = await Promise.all([obtenerFuentes(), obtenerSupuestos()]);
-		} catch (e) {
-			error = `No pude leer los datos de ${API_URL} (${(e as Error).message})`;
-		}
+	$effect(() => {
+		const idioma = $locale;
+		if (!idioma) return;
+		let vigente = true;
+		Promise.all([obtenerFuentes(idioma), obtenerSupuestos(idioma)])
+			.then(([fu, su]) => {
+				if (!vigente) return;
+				fuentes = fu;
+				supuestos = su;
+				error = null;
+			})
+			.catch((e: Error) => {
+				if (vigente) error = e.message;
+			});
+		return () => {
+			vigente = false;
+		};
 	});
 
-	const hechos = $derived(fuentes?.facts.filter((f) => f.dimension === 'canon') ?? []);
+	const f = $derived($formato);
+	const hechos = $derived(fuentes?.facts.filter((h) => h.dimension === 'canon') ?? []);
 	const v = (k: string, d = 0) => supuestos?.valores[k]?.valor ?? d;
 
 	// Canon (ep. 6): media pinta = 300 kcal, 8-12% HDP, 8 cartones al día para 2,400 kcal.
@@ -46,57 +60,59 @@
 
 <div class="pagina">
 	<header>
-		<h1>Lo que dice el canon</h1>
-		<p>
-			La colmena no puede matar, dañar ni interferir con ninguna forma de vida, plantas incluidas. Come lo que ya
-			existía, la fruta que cae sola, los animales que mueren de forma natural y el HDP de los humanos que mueren.
-		</p>
+		<h1>{$_('canon.titulo')}</h1>
+		<p>{$_('canon.intro')}</p>
 	</header>
 
 	{#if error}
-		<div class="aviso" role="alert">{error}</div>
+		<div class="aviso" role="alert">{$_('canon.error', { values: { url: API_URL, detalle: error } })}</div>
 	{/if}
 
 	<section class="tarjeta-grafica">
-		<h4>Las cuentas del HDP no cierran</h4>
+		<h4>{$_('canon.hdp_titulo')}</h4>
 		<div class="cuentas">
 			<div>
-				<span class="cifra">{numero(hdp.necesarioBajo / 1e9, 2)}–{numero(hdp.necesarioAlto / 1e9, 2)} Mt</span>
-				<span>de HDP al día harían falta si todos tomaran la bebida del canon (8 medias pintas al 8–12%)</span>
+				<span class="cifra">
+					{$_('canon.cifra_mt', { values: { desde: f.numero(hdp.necesarioBajo / 1e9, 2), hasta: f.numero(hdp.necesarioAlto / 1e9, 2) } })}
+				</span>
+				<span>{$_('canon.hdp_necesario')}</span>
 			</div>
 			<div>
-				<span class="cifra">{numero(hdp.disponible / 1e6, 1)} mil t</span>
-				<span>es lo que dan las muertes diarias: {numero(hdp.cobertura[0] * 100, 2)}–{numero(hdp.cobertura[1] * 100, 2)}% de lo necesario</span>
+				<span class="cifra">{$_('canon.cifra_miles_t', { values: { n: f.numero(hdp.disponible / 1e6, 1) } })}</span>
+				<span>
+					{$_('canon.hdp_disponible', {
+						values: { desde: f.numero(hdp.cobertura[0] * 100, 2), hasta: f.numero(hdp.cobertura[1] * 100, 2) }
+					})}
+				</span>
 			</div>
 			<div>
-				<span class="cifra">{numero(hdp.diasUnion[0])}–{numero(hdp.diasUnion[1])} días</span>
-				<span>alcanzarían los cuerpos de la Unión para esa bebida</span>
+				<span class="cifra">
+					{$_('canon.cifra_dias_rango', { values: { desde: f.numero(hdp.diasUnion[0]), hasta: f.numero(hdp.diasUnion[1]) } })}
+				</span>
+				<span>{$_('canon.hdp_union')}</span>
 			</div>
 			<div>
-				<span class="cifra">{numero(hdp.diasMundoUnion, 1)} días</span>
-				<span>de comida para todo el mundo son, en calorías, los {personas(v('muertes_union', 886_477_591))} muertos de la Unión</span>
+				<span class="cifra">{$_('canon.cifra_dias', { values: { n: f.numero(hdp.diasMundoUnion, 1) } })}</span>
+				<span>{$_('canon.hdp_mundo', { values: { muertos: f.personas(v('muertes_union', 886_477_591)) } })}</span>
 			</div>
 		</div>
-		<p class="nota">
-			Cada cuerpo alimenta a una persona unos {numero(hdp.diasPersonaPorCuerpo)} días. En calorías, el HDP es casi simbólico: sirve como
-			proteína para una minoría, no como la base de la dieta.
-		</p>
+		<p class="nota">{$_('canon.hdp_nota', { values: { dias: Math.round(hdp.diasPersonaPorCuerpo) } })}</p>
 	</section>
 
 	<section class="tarjeta-grafica">
-		<h4>Hechos del canon</h4>
+		<h4>{$_('canon.hechos')}</h4>
 		{#if hechos.length}
 			<ul class="hechos">
 				{#each hechos as h (h.id)}
 					<li>
 						<p>{h.statement}</p>
-						{#if h.model_implication}<p class="implicacion">En el modelo: {h.model_implication}</p>{/if}
+						{#if h.model_implication}<p class="implicacion">{$_('canon.en_modelo', { values: { texto: h.model_implication } })}</p>{/if}
 						<a href={h.source_url} target="_blank" rel="noreferrer">{new URL(h.source_url).hostname}</a>
 					</li>
 				{/each}
 			</ul>
 		{:else}
-			<p class="nota">Los hechos investigados del canon aparecen aquí en cuanto se carga el set de fuentes en la API.</p>
+			<p class="nota">{$_('canon.sin_hechos')}</p>
 		{/if}
 	</section>
 </div>

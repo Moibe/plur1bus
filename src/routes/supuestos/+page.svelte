@@ -1,21 +1,35 @@
 <script lang="ts">
-	// Todos los números base del modelo, con su rango y de dónde salen.
-	import { onMount } from 'svelte';
+	// Todos los números base del modelo, con su rango y de dónde salen. Las
+	// descripciones y unidades llegan traducidas por la API (?lang=).
+	import { _, locale } from 'svelte-i18n';
 	import { obtenerSupuestos, API_URL } from '$lib/api';
-	import { MESES, numero } from '$lib/formato';
+	import { formato } from '$lib/formato';
 	import type { Supuestos } from '$lib/tipos';
 
 	let datos = $state<Supuestos | null>(null);
+	/** detalle técnico del error; el aviso se arma en el idioma activo */
 	let error = $state<string | null>(null);
 	let filtro = $state('');
 
-	onMount(async () => {
-		try {
-			datos = await obtenerSupuestos();
-		} catch (e) {
-			error = `No pude leer los supuestos de ${API_URL} (${(e as Error).message})`;
-		}
+	$effect(() => {
+		const idioma = $locale;
+		if (!idioma) return;
+		let vigente = true;
+		obtenerSupuestos(idioma)
+			.then((d) => {
+				if (!vigente) return;
+				datos = d;
+				error = null;
+			})
+			.catch((e: Error) => {
+				if (vigente) error = e.message;
+			});
+		return () => {
+			vigente = false;
+		};
 	});
+
+	const f = $derived($formato);
 
 	const valores = $derived(
 		datos
@@ -26,35 +40,41 @@
 	);
 
 	function cifra(x: number): string {
-		if (x === 0) return '0';
+		if (x === 0) return f.numero(0);
 		const a = Math.abs(x);
-		if (a >= 1e12) return x.toExponential(2);
-		if (a >= 100) return numero(x);
-		return numero(x, 3);
+		if (a >= 1e12) return f.cientifica(x);
+		if (a >= 100) return f.numero(x);
+		return f.numero(x, 3);
 	}
 
-	const CONFIANZA: Record<string, string> = { high: 'alta', medium: 'media', low: 'baja' };
+	const MESES = Array.from({ length: 12 }, (_m, i) => i + 1);
 </script>
 
 <div class="pagina">
 	<header>
-		<h1>Supuestos del modelo</h1>
+		<h1>{$_('supuestos.titulo')}</h1>
 		<p>
-			Cada número que usa el motor, con el rango que puedes explorar y las fuentes que lo respaldan.
+			{$_('supuestos.intro')}
 			{#if datos?.nota}<br /><em>{datos.nota}</em>{/if}
 		</p>
-		<input class="buscar" bind:value={filtro} placeholder="Buscar (p. ej. cereal, hdp, perros)" />
+		<input class="buscar" bind:value={filtro} placeholder={$_('supuestos.buscar')} dir="auto" />
 	</header>
 
 	{#if error}
-		<div class="aviso" role="alert">{error}</div>
+		<div class="aviso" role="alert">{$_('supuestos.error', { values: { url: API_URL, detalle: error } })}</div>
 	{:else if datos}
 		<section class="tarjeta-grafica">
-			<h4>Valores</h4>
+			<h4>{$_('supuestos.valores')}</h4>
 			<div class="tabla-scroll alta">
 				<table>
 					<thead>
-						<tr><th>Supuesto</th><th>Valor</th><th>Rango</th><th>Unidad</th><th>Fuentes</th></tr>
+						<tr>
+							<th>{$_('supuestos.col_supuesto')}</th>
+							<th>{$_('supuestos.col_valor')}</th>
+							<th>{$_('supuestos.col_rango')}</th>
+							<th>{$_('supuestos.col_unidad')}</th>
+							<th>{$_('supuestos.col_fuentes')}</th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each valores as [clave, v] (clave)}
@@ -65,16 +85,19 @@
 									{#if v.derivacion}<span class="derivacion">{v.derivacion}</span>{/if}
 								</td>
 								<td>{cifra(v.valor)}</td>
-								<td>{v.bajo === v.alto ? '—' : `${cifra(v.bajo)} a ${cifra(v.alto)}`}</td>
+								<td>{v.bajo === v.alto ? '—' : $_('supuestos.rango', { values: { bajo: cifra(v.bajo), alto: cifra(v.alto) } })}</td>
 								<td class="unidad">{v.unidad}</td>
 								<td class="fuentes">
-									{#each v.fuentes_detalle as f (f.id)}
-										<a href={f.source_url} target="_blank" rel="noreferrer" title={f.source_quote ?? ''}>
-											{f.source_title || new URL(f.source_url).hostname}
+									{#each v.fuentes_detalle as fuente (fuente.id)}
+										<!-- los títulos van en su idioma original: dir="auto" los aísla para que en árabe no se les mueva la puntuación -->
+										<a href={fuente.source_url} target="_blank" rel="noreferrer" title={fuente.source_quote ?? ''} dir="auto">
+											{fuente.source_title || new URL(fuente.source_url).hostname}
 										</a>
-										<span class="confianza {f.confidence}">{CONFIANZA[f.confidence] ?? f.confidence}</span>
+										<span class="confianza {fuente.confidence}">
+											{$_(`supuestos.confianza.${fuente.confidence}`, { default: fuente.confidence })}
+										</span>
 									{:else}
-										<span class="sin-fuente">sin fuente todavía</span>
+										<span class="sin-fuente">{$_('supuestos.sin_fuente')}</span>
 									{/each}
 								</td>
 							</tr>
@@ -85,13 +108,13 @@
 		</section>
 
 		<section class="tarjeta-grafica">
-			<h4>Tablas por mes</h4>
+			<h4>{$_('supuestos.tablas')}</h4>
 			<div class="tabla-scroll">
 				<table>
 					<thead>
 						<tr>
-							<th>Tabla</th>
-							{#each MESES as m (m)}<th>{m.slice(0, 3)}</th>{/each}
+							<th>{$_('supuestos.col_tabla')}</th>
+							{#each MESES as m (m)}<th>{f.mesCorto(m)}</th>{/each}
 						</tr>
 					</thead>
 					<tbody>
@@ -107,11 +130,18 @@
 		</section>
 
 		<section class="tarjeta-grafica">
-			<h4>Ganado</h4>
+			<h4>{$_('supuestos.ganado')}</h4>
 			<div class="tabla-scroll">
 				<table>
 					<thead>
-						<tr><th>Grupo</th><th>Cabezas</th><th>kcal comestibles por cabeza</th><th>Vida natural (días)</th><th>Pienso (kcal/día)</th><th>Pastoreo</th></tr>
+						<tr>
+							<th>{$_('supuestos.col_grupo')}</th>
+							<th>{$_('supuestos.col_cabezas')}</th>
+							<th>{$_('supuestos.col_kcal_cabeza')}</th>
+							<th>{$_('supuestos.col_vida')}</th>
+							<th>{$_('supuestos.col_pienso')}</th>
+							<th>{$_('supuestos.col_pastoreo')}</th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each Object.entries(datos.ganado) as [clave, g] (clave)}
@@ -121,7 +151,7 @@
 								<td>{cifra(Number(g.kcal_comestible_cabeza))}</td>
 								<td>{cifra(Number(g.vida_natural_dias))}</td>
 								<td>{cifra(Number(g.alimento_kcal_dia))}</td>
-								<td>{numero(Number(g.frac_pastoreo) * 100)}%</td>
+								<td>{f.pct(Number(g.frac_pastoreo))}</td>
 							</tr>
 						{/each}
 					</tbody>
@@ -129,7 +159,7 @@
 			</div>
 		</section>
 	{:else}
-		<p>Cargando…</p>
+		<p>{$_('supuestos.cargando')}</p>
 	{/if}
 </div>
 
@@ -167,7 +197,7 @@
 		max-height: 60vh;
 	}
 	.desc {
-		text-align: left !important;
+		text-align: start !important;
 		white-space: normal !important;
 		min-width: 260px;
 	}
@@ -190,21 +220,21 @@
 		color: var(--viz-ink-2);
 	}
 	.fuentes {
-		text-align: left !important;
+		text-align: start !important;
 		white-space: normal !important;
 		min-width: 200px;
 	}
 	.fuentes a {
 		color: #fde68a;
 		text-decoration: none;
-		margin-right: 0.3rem;
+		margin-inline-end: 0.3rem;
 	}
 	.fuentes a:hover {
 		text-decoration: underline;
 	}
 	.confianza {
 		display: inline-block;
-		margin-right: 0.6rem;
+		margin-inline-end: 0.6rem;
 		padding: 0 0.4rem;
 		font-size: 0.68rem;
 		border-radius: 999px;

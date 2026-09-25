@@ -1,0 +1,223 @@
+{
+	"nav": {
+		"inicio": "Start",
+		"simulador": "Simulator",
+		"supuestos": "Annahmen",
+		"canon": "Kanon"
+	},
+	"idioma": {
+		"cambiar": "Sprache ändern",
+		"actual": "Sprache: {idioma}"
+	},
+	"sidebar": {
+		"escenarios": "Szenarien",
+		"guardados": "Gespeichert",
+		"vacio": "Du hast noch kein Szenario gespeichert.",
+		"error_cargar": "Die gespeicherten Szenarien konnten nicht geladen werden ({detalle})",
+		"borrar_aria": "{nombre} löschen",
+		"replegar": "Seitenleiste einklappen",
+		"mostrar": "Seitenleiste einblenden",
+		"cambia": "Änderungen: {cambios}.",
+		"igual_canon": "Entspricht dem Kanon."
+	},
+	"borrar": {
+		"titulo": "„{nombre}“ löschen?",
+		"descripcion": "Das gespeicherte Szenario wird endgültig gelöscht.",
+		"cancelar": "Abbrechen",
+		"confirmar": "Löschen",
+		"borrando": "Wird gelöscht…",
+		"error": "Löschen fehlgeschlagen: {detalle}"
+	},
+	"presets": {
+		"canon": {
+			"nombre": "Strenger Kanon",
+			"resumen": "Was die Serie zeigt, ohne etwas zu verändern.",
+			"explicacion": "Der Schwarm darf keine Lebensform töten oder verletzen, nicht einmal eine Pflanze: Er erntet nicht, fischt nicht und schlachtet keine Tiere. Er isst die vorhandenen Vorräte, Fallobst, Tiere, die eines natürlichen Todes sterben, und das HDP verstorbener Menschen. Er lässt Vieh und Haustiere frei, melkt die Kühe weiter, und alle essen, so viel sie brauchen, bis nichts mehr da ist. Die Vereinigung findet im Juli statt, dem Monat mit den geringsten Getreidevorräten des Jahres; die Hinweise im Kanon deuten auf den späten Frühling oder den Sommer."
+		},
+		"cena": {
+			"nombre": "Cenas Ration",
+			"resumen": "Ab dem ersten Tag die Ration, die sich aus Cenas Video ergibt: ~67%.",
+			"explicacion": "Im Video aus Folge 6 sagt John Cena, dass jemand seiner Statur acht Kartons zu je 300 kcal pro Tag braucht: 2.400 kcal. Aber Cena wiegt etwa 114 kg, und ein solcher Körper verbraucht rund 3.000, also ist diese Kost bereits ein Defizit von ~21 kcal pro Kilo. Auf einen Durchschnittsmenschen umgerechnet entspricht sie ~67% des Bedarfs. Hier verteilt der Schwarm diese feste Ration ab dem ersten Tag: Die Nahrung reicht länger, aber die ohnehin Dünnen beginnen bald zu sterben."
+		},
+		"estirar": {
+			"nombre": "Der Schwarm streckt auf 10 Jahre",
+			"resumen": "Sie rationieren, damit die Nahrung für Koumbas zehn Jahre reicht.",
+			"explicacion": "Koumba sagt Carol, dass laut dem Schwarm selbst die meisten in den nächsten zehn Jahren verhungern werden. Hier plant der Schwarm: Jeden Tag berechnet er die Ration, mit der die eingelagerten Vorräte plus alles, was noch hinzukommt (Obst, HDP, Fleisch, Milch), zehn Jahre lang reichen würden, ohne je unter 60% des Bedarfs zu fallen. Alle essen von Anfang an weniger, daher trifft der Hunger die Schwächsten früher, aber der allgemeine Zusammenbruch verzögert sich."
+		},
+		"diciembre": {
+			"nombre": "Vereinigung im Dezember",
+			"resumen": "Direkt nach der Ernte im Norden: volle Kornspeicher.",
+			"explicacion": "Der Kanon sagt nicht, an welchem Datum die Vereinigung stattfand, und die weltweit eingelagerte Getreidemenge schwankt stark mit dem Erntekalender: Am 1. Juli sind es ~1.385 Millionen Tonnen, am 1. Dezember ~2.185. Mit der Vereinigung im Dezember startet der Schwarm mit Nahrung für etwa 200 Tage mehr. Alles andere entspricht dem Kanon."
+		},
+		"ganado": {
+			"nombre": "Nutztiere füttern",
+			"resumen": "Die Tiere werden nicht freigelassen: Sie fressen dasselbe Getreide wie die Menschen.",
+			"explicacion": "In der Serie lässt der Schwarm das Vieh frei: Kusimayus Dorfbewohner lassen es laufen, als sie sich anschließt. Hier füttert der Schwarm die Tiere wie bisher weiter, damit sie nicht verhungern. Aber heute frisst das Vieh ~1.100 Millionen Tonnen Getreide pro Jahr, mehr als die Menschen direkt essen, daher reichen die Vorräte nur halb so lange (von ~589 auf ~288 Tage). Dafür sterben mehr Tiere auf dem Hof, und ihr Fleisch lässt sich besser verwerten."
+		},
+		"resquicios": {
+			"nombre": "Mit Schlupflöchern",
+			"resumen": "Großzügige Auslegungen der Regel: Geburten, Eier, Honig und Getreide abgestorbener Pflanzen.",
+			"explicacion": "Die Regel lautet: nicht töten, nicht verletzen. Manches wäre damit aber vereinbar: das Vieh weiter Junge bekommen lassen, damit die Milch nie ausgeht, Eier und Honig einsammeln (dafür füttert der Schwarm das Vieh weiter), das Getreide von bereits gesäten Feldern einbringen, wenn die Pflanze beim Reifen von selbst abstirbt (70% dessen, was geerntet worden wäre), und ab dem zweiten Jahr säen und erst ernten, wenn die Pflanze schon vertrocknet ist (50% einer normalen Ernte). Das ist kein Kanon: Im Video sagt Cena, dass sie weder Weizen noch Mais noch Reis ernten können. So sieht man, dass das Problem an den Regeln liegt, nicht an der Nahrung."
+		}
+	},
+	"escenario": {
+		"titulo": "Szenario",
+		"guardado": "gespeichert",
+		"modificado": "geändert",
+		"que_cambia": "Was sich gegenüber dem Kanon ändert",
+		"nada": "Nichts: Es ist die Basis, mit der alle anderen Szenarien verglichen werden.",
+		"movido": "Du hast nach dem Laden an Stellschrauben gedreht: Die Liste enthält deine Änderungen bereits."
+	},
+	"guardar": {
+		"boton": "Speichern",
+		"titulo": "Szenario speichern",
+		"descripcion": "Gespeichert werden nur die Stellschrauben, die du gegenüber dem Kanon verändert hast.",
+		"nombre": "Name",
+		"nombre_ejemplo": "z. B. Juni mit Milch und Eiern",
+		"explicacion": "Worum geht es in diesem Szenario?",
+		"explicacion_ejemplo": "Was du annimmst und warum es sich lohnt, es anzusehen",
+		"explicacion_ayuda": "Pflichtfeld. Ich habe dir einen Entwurf mit den Änderungen vorbereitet; formuliere ihn mit deinen eigenen Worten.",
+		"cancelar": "Abbrechen",
+		"guardando": "Wird gespeichert…",
+		"error": "Speichern fehlgeschlagen: {detalle}",
+		"borrador_igual": "Entspricht dem Kanon: verändert keine Stellschraube.",
+		"borrador": "Basiert auf {partida}. Änderungen: {cambios}.",
+		"partida_canon": "dem Kanon",
+		"partida_otro": "„{nombre}“"
+	},
+	"palancas": {
+		"por_mes": "Nach Monat",
+		"automatico": "automatisch",
+		"si": "Ja",
+		"no": "Nein"
+	},
+	"opciones": {
+		"completa": "Voll",
+		"fija": "Fest",
+		"estirar": "Strecken",
+		"liberar": "Freilassen",
+		"alimentar": "Füttern"
+	},
+	"simulador": {
+		"error_api": "Ich konnte die API unter {url} nicht erreichen. Läuft plur1bus-api? ({detalle})",
+		"simulando": "Simulation läuft…",
+		"hero": {
+			"empieza": "Zeit bis zur Hungersnot",
+			"detalle": "{fecha}: der Tag, an dem der Hunger beginnt, mehr Menschen zu töten als alle anderen Ursachen zusammen. Zu Beginn gab es eingelagerte Nahrung für {dias, plural, one {# Tag} other {# Tage}}.",
+			"sin_etiqueta": "In {anios, plural, one {# Jahr} other {# Jahren}}",
+			"sin_valor": "keine Hungersnot",
+			"sin_detalle": "In diesem Szenario reicht die Nahrung für alle."
+		},
+		"kpi": {
+			"mitad": "Bevölkerung halbiert",
+			"nunca": "Nie",
+			"mitad_detalle": "{duracion} nach der Vereinigung",
+			"en_anios": "in {anios, plural, one {# Jahr} other {# Jahren}}",
+			"diez": "Bevölkerung nach 10 Jahren",
+			"diez_detalle": "{pct} des Schwarms",
+			"carga": "Tragfähigkeit",
+			"carga_detalle": "langfristig: Durchschnitt der Jahre {desde} bis {hasta}",
+			"koumba": "Hat Koumba recht?",
+			"si": "Ja",
+			"no": "Nein",
+			"koumba_detalle": "{pct} verhungern innerhalb von 10 Jahren"
+		},
+		"graficas": {
+			"poblacion": "Bevölkerung des Schwarms",
+			"poblacion_sub": "Lebende Menschen am Ende jeder Woche",
+			"poblacion_serie": "Bevölkerung",
+			"hambruna": "Beginn der Hungersnot",
+			"fuentes": "Woher die Nahrung kommt",
+			"fuentes_sub": "Verzehrte kcal pro Tag, nach Quelle",
+			"cuerpo": "Ration und Körperreserve",
+			"cuerpo_sub": "Ration: was die Menschen essen, gemessen an ihrem normalen Bedarf. Reserve: was dem durchschnittlichen Körper bleibt.",
+			"racion": "Ration",
+			"reserva": "Körperreserve"
+		},
+		"grupos": {
+			"cereal": "Getreide",
+			"inventario": "Andere Vorräte",
+			"frescos": "Frischware und Fallobst",
+			"hdp": "HDP",
+			"carne": "Tierfleisch"
+		},
+		"tabla": {
+			"titulo": "Alles, was in {anios, plural, one {# Jahr} other {# Jahren}} gegessen wurde",
+			"fuente": "Quelle",
+			"inicio": "Zu Beginn",
+			"consumido": "Verzehrt",
+			"parte": "Anteil an der Ernährung",
+			"bill_kcal": "{n} Bio. kcal"
+		}
+	},
+	"grafica": {
+		"ver_tabla": "Tabelle anzeigen",
+		"ver_grafica": "Diagramm anzeigen",
+		"escala_log": "Log-Skala",
+		"escala_lineal": "Lineare Skala",
+		"semana": "Woche",
+		"total": "Gesamt",
+		"aria": "{titulo}. Nutze die Pfeiltasten, um durch die Wochen zu navigieren."
+	},
+	"numeros": {
+		"miles_de_millones": "{n} Milliarden",
+		"millones": "{n} Millionen",
+		"miles": "{n} Tausend",
+		"abrev_millones": "{n} Mio.",
+		"abrev_miles": "{n} Tsd.",
+		"billones": "{n} Billionen"
+	},
+	"duracion": {
+		"dias": "{n, plural, one {# Tag} other {# Tage}}",
+		"meses": "{n, plural, one {# Monat} other {# Monate}}",
+		"anios": "{n, plural, one {# Jahr} other {# Jahre}}",
+		"y": "{a} und {b}"
+	},
+	"supuestos": {
+		"titulo": "Annahmen des Modells",
+		"intro": "Jede Zahl, die die Simulation verwendet, mit dem Bereich, den du erkunden kannst, und den Quellen, die sie belegen.",
+		"buscar": "Suchen (z. B. Getreide, HDP, Hunde)",
+		"valores": "Werte",
+		"col_supuesto": "Annahme",
+		"col_valor": "Wert",
+		"col_rango": "Bereich",
+		"col_unidad": "Einheit",
+		"col_fuentes": "Quellen",
+		"rango": "{bajo} bis {alto}",
+		"sin_fuente": "noch ohne Quelle",
+		"confianza": {
+			"high": "hoch",
+			"medium": "mittel",
+			"low": "niedrig"
+		},
+		"tablas": "Tabellen nach Monat",
+		"col_tabla": "Tabelle",
+		"ganado": "Nutztiere",
+		"col_grupo": "Gruppe",
+		"col_cabezas": "Tiere",
+		"col_kcal_cabeza": "Essbare kcal pro Tier",
+		"col_vida": "Natürliche Lebensdauer (Tage)",
+		"col_pienso": "Futtermittel (kcal/Tag)",
+		"col_pastoreo": "Weideanteil",
+		"cargando": "Wird geladen…",
+		"error": "Ich konnte die Annahmen nicht von {url} laden ({detalle})"
+	},
+	"canon": {
+		"titulo": "Was der Kanon sagt",
+		"intro": "Der Schwarm darf keine Lebensform töten, verletzen oder in sie eingreifen, auch keine Pflanzen. Er isst, was bereits vorhanden war, Fallobst, Tiere, die eines natürlichen Todes sterben, und das HDP verstorbener Menschen.",
+		"error": "Ich konnte die Daten nicht von {url} laden ({detalle})",
+		"hdp_titulo": "Die HDP-Rechnung geht nicht auf",
+		"cifra_mt": "{desde}–{hasta} Mt",
+		"hdp_necesario": "HDP pro Tag wären nötig, wenn alle das Getränk aus dem Kanon trinken würden (8 halbe Pints zu 8–12%)",
+		"cifra_miles_t": "{n} Tsd. t",
+		"hdp_disponible": "ergeben die täglichen Todesfälle: {desde}–{hasta}% des Bedarfs",
+		"cifra_dias_rango": "{desde}–{hasta} Tage",
+		"hdp_union": "würden die Leichen aus der Vereinigung für dieses Getränk reichen",
+		"cifra_dias": "{n} Tage",
+		"hdp_mundo": "Nahrung für die ganze Welt ergeben, in Kalorien gerechnet, die {muertos} Toten der Vereinigung",
+		"hdp_nota": "Jeder Körper ernährt eine Person etwa {dias, plural, one {# Tag} other {# Tage}} lang. Kalorisch ist HDP fast symbolisch: Es dient einer Minderheit als Protein, nicht als Grundlage der Ernährung.",
+		"hechos": "Fakten aus dem Kanon",
+		"en_modelo": "Im Modell: {texto}",
+		"sin_hechos": "Die recherchierten Fakten aus dem Kanon erscheinen hier, sobald der Quellensatz in der API geladen ist."
+	}
+}

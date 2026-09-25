@@ -6,9 +6,11 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
+  import { _ } from 'svelte-i18n';
   import * as Dialog from '$lib/components/ui/dialog';
   import { Button } from '$lib/components/ui/button';
   import { PRESETS, estado, type Preset } from '$lib/estado.svelte';
+  import { formato } from '$lib/formato';
   import { guardados } from '$lib/guardados.svelte';
   import { cambiosEnTexto, describirCambios } from '$lib/palancas';
   import type { EscenarioGuardado } from '$lib/tipos';
@@ -57,23 +59,23 @@
   // Los guardados antes de que existiera la explicación la toman de lo que cambian.
   function explicacionDe(g: EscenarioGuardado): string {
     if (g.descripcion) return g.descripcion;
-    const cambios = cambiosEnTexto(describirCambios(g.parametros, estado.esquema));
-    return cambios ? `Cambia: ${cambios}.` : 'Igual al canon.';
+    const cambios = cambiosEnTexto(describirCambios(g.parametros, estado.esquema, $formato, $_));
+    return cambios ? $_('sidebar.cambia', { values: { cambios } }) : $_('sidebar.igual_canon');
   }
 
   async function irA() {
     if (page.url.pathname !== '/') await goto('/');
   }
   function aplicarPreset(p: Preset) {
-    estado.aplicar(p.cambios, { nombre: p.nombre, explicacion: p.explicacion });
+    estado.aplicarPreset(p);
     irA();
   }
   function aplicarGuardado(g: EscenarioGuardado) {
-    estado.aplicar(g.parametros, { nombre: g.nombre, explicacion: explicacionDe(g), guardado: true });
+    estado.aplicarGuardado({ id: g.id, nombre: g.nombre, explicacion: explicacionDe(g), parametros: g.parametros });
     irA();
   }
-  const activo = (nombre: string, guardado: boolean) =>
-    estado.origen.nombre === nombre && estado.origen.guardado === guardado ? 'page' : undefined;
+  const presetActivo = (id: string) => (estado.origen.tipo === 'preset' && estado.origen.id === id ? 'page' : undefined);
+  const guardadoActivo = (id: number) => (estado.origen.tipo === 'guardado' && estado.origen.id === id ? 'page' : undefined);
 
   let porBorrar = $state<EscenarioGuardado | null>(null);
   let borrando = $state(false);
@@ -87,7 +89,7 @@
       porBorrar = null;
       errorBorrar = null;
     } catch (e) {
-      errorBorrar = `No se pudo borrar: ${(e as Error).message}`;
+      errorBorrar = $_('borrar.error', { values: { detalle: (e as Error).message } });
     } finally {
       borrando = false;
     }
@@ -103,25 +105,25 @@
     onmouseleave={handleLeave}
   >
     <nav>
-      <span class="nav-titulo">Escenarios</span>
-      {#each PRESETS as p (p.nombre)}
-        <button type="button" class="nav-item" aria-current={activo(p.nombre, false)} onclick={() => aplicarPreset(p)}>
+      <span class="nav-titulo">{$_('sidebar.escenarios')}</span>
+      {#each PRESETS as p (p.id)}
+        <button type="button" class="nav-item" aria-current={presetActivo(p.id)} onclick={() => aplicarPreset(p)}>
           <span class="nav-ico" aria-hidden="true"></span>
           <span class="nav-texto">
-            <span class="nav-nombre">{p.nombre}</span>
-            <span class="nav-resumen">{p.resumen}</span>
+            <span class="nav-nombre">{$_(`presets.${p.id}.nombre`)}</span>
+            <span class="nav-resumen">{$_(`presets.${p.id}.resumen`)}</span>
           </span>
         </button>
       {/each}
 
-      <span class="nav-titulo">Guardados</span>
+      <span class="nav-titulo">{$_('sidebar.guardados')}</span>
       {#if guardados.error}
-        <span class="nav-vacio">{guardados.error}</span>
+        <span class="nav-vacio">{$_('sidebar.error_cargar', { values: { detalle: guardados.error } })}</span>
       {:else if !guardados.lista.length}
-        <span class="nav-vacio">Todavía no guardas ninguno.</span>
+        <span class="nav-vacio">{$_('sidebar.vacio')}</span>
       {/if}
       {#each guardados.lista as g (g.id)}
-        <div class="guardado" aria-current={activo(g.nombre, true)}>
+        <div class="guardado" aria-current={guardadoActivo(g.id)}>
           <button type="button" class="nav-item" onclick={() => aplicarGuardado(g)}>
             <span class="nav-ico" aria-hidden="true"></span>
             <span class="nav-texto">
@@ -129,7 +131,7 @@
               <span class="nav-resumen recortado">{explicacionDe(g)}</span>
             </span>
           </button>
-          <button type="button" class="borrar" aria-label={`Borrar ${g.nombre}`} onclick={() => (porBorrar = g)}>
+          <button type="button" class="borrar" aria-label={$_('sidebar.borrar_aria', { values: { nombre: g.nombre } })} onclick={() => (porBorrar = g)}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
           </button>
         </div>
@@ -137,13 +139,13 @@
     </nav>
 
     <div class="sidebar-footer">
-      <button type="button" class="collapse-btn" onclick={handleCollapseClick} aria-label="Replegar barra">
+      <button type="button" class="collapse-btn" onclick={handleCollapseClick} aria-label={$_('sidebar.replegar')}>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6" /></svg>
       </button>
     </div>
   </aside>
 {:else}
-  <button type="button" class="reveal-handle" onclick={toggleCollapsed} aria-label="Mostrar barra">
+  <button type="button" class="reveal-handle" onclick={toggleCollapsed} aria-label={$_('sidebar.mostrar')}>
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg>
   </button>
 {/if}
@@ -151,13 +153,13 @@
 <Dialog.Root open={porBorrar !== null} onOpenChange={(abierto) => { if (!abierto) porBorrar = null; }}>
   <Dialog.Content class="modal-glass">
     <Dialog.Header>
-      <Dialog.Title>¿Borrar «{porBorrar?.nombre}»?</Dialog.Title>
-      <Dialog.Description>El escenario guardado se elimina para siempre.</Dialog.Description>
+      <Dialog.Title>{$_('borrar.titulo', { values: { nombre: porBorrar?.nombre ?? '' } })}</Dialog.Title>
+      <Dialog.Description>{$_('borrar.descripcion')}</Dialog.Description>
     </Dialog.Header>
     {#if errorBorrar}<p class="error-borrar">{errorBorrar}</p>{/if}
     <Dialog.Footer>
-      <Button variant="ghost" onclick={() => (porBorrar = null)}>Cancelar</Button>
-      <Button variant="destructive" disabled={borrando} onclick={confirmarBorrado}>{borrando ? 'Borrando…' : 'Borrar'}</Button>
+      <Button variant="ghost" onclick={() => (porBorrar = null)}>{$_('borrar.cancelar')}</Button>
+      <Button variant="destructive" disabled={borrando} onclick={confirmarBorrado}>{borrando ? $_('borrar.borrando') : $_('borrar.confirmar')}</Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
@@ -166,7 +168,7 @@
   .sidebar {
     position: fixed;
     top: calc(2rem + var(--topnav-height, 64px));
-    left: 1rem;
+    inset-inline-start: 1rem;
     bottom: 1rem;
     box-sizing: border-box;
     width: max-content;
@@ -201,7 +203,8 @@
     display: none;
   }
   .nav-titulo {
-    margin: 0.6rem 0 0.1rem 0.4rem;
+    margin-block: 0.6rem 0.1rem;
+    margin-inline: 0.4rem 0;
     font-size: 0.7rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -254,7 +257,7 @@
     width: 100%;
     background: transparent;
     font: inherit;
-    text-align: left;
+    text-align: start;
     cursor: pointer;
     display: flex;
     align-items: flex-start;
@@ -341,7 +344,7 @@
   }
   .reveal-handle {
     position: fixed;
-    left: 0.75rem;
+    inset-inline-start: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
     padding: 0.55rem 0.45rem;
@@ -354,5 +357,10 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.08),
       0 4px 16px rgba(0, 0, 0, 0.12);
     z-index: 10;
+  }
+  /* En árabe la barra vive a la derecha: los chevrons apuntan al revés. */
+  :global([dir='rtl']) .collapse-btn svg,
+  :global([dir='rtl']) .reveal-handle svg {
+    transform: scaleX(-1);
   }
 </style>

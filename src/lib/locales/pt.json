@@ -1,0 +1,223 @@
+{
+	"nav": {
+		"inicio": "Início",
+		"simulador": "Simulador",
+		"supuestos": "Premissas",
+		"canon": "Cânone"
+	},
+	"idioma": {
+		"cambiar": "Mudar idioma",
+		"actual": "Idioma: {idioma}"
+	},
+	"sidebar": {
+		"escenarios": "Cenários",
+		"guardados": "Salvos",
+		"vacio": "Você ainda não salvou nenhum.",
+		"error_cargar": "Não foi possível carregar os cenários salvos ({detalle})",
+		"borrar_aria": "Excluir {nombre}",
+		"replegar": "Recolher barra",
+		"mostrar": "Mostrar barra",
+		"cambia": "Altera: {cambios}.",
+		"igual_canon": "Igual ao cânone."
+	},
+	"borrar": {
+		"titulo": "Excluir “{nombre}”?",
+		"descripcion": "O cenário salvo será excluído para sempre.",
+		"cancelar": "Cancelar",
+		"confirmar": "Excluir",
+		"borrando": "Excluindo…",
+		"error": "Não foi possível excluir: {detalle}"
+	},
+	"presets": {
+		"canon": {
+			"nombre": "Cânone estrito",
+			"resumen": "O que a série mostra, sem mexer em nada.",
+			"explicacion": "A colmeia não pode matar nem ferir nenhuma forma de vida, nem mesmo uma planta: não colhe, não pesca e não abate animais. Come o que já estava armazenado, as frutas que caem sozinhas, os animais que morrem de forma natural e o HDP dos humanos que morrem. Solta o gado e os animais de estimação, continua ordenhando as vacas e todos comem o que precisam até acabar. A Junção é em julho, o mês com menos grãos armazenados do ano; as pistas do cânone apontam para o fim da primavera ou o verão."
+		},
+		"cena": {
+			"nombre": "A ração de Cena",
+			"resumen": "Desde o primeiro dia, a ração implícita no vídeo de Cena: ~67%.",
+			"explicacion": "No vídeo do episódio 6, John Cena diz que alguém do tamanho dele precisa de oito caixinhas de 300 kcal por dia: 2.400 kcal. Mas Cena pesa uns 114 kg e um corpo assim gasta cerca de 3.000, então essa dieta já é um déficit de ~21 kcal por quilo. Escalada para uma pessoa média, equivale a ~67% do que ela precisa. Aqui a colmeia distribui essa ração fixa desde o primeiro dia: a comida dura mais, mas quem já era magro começa a morrer cedo."
+		},
+		"estirar": {
+			"nombre": "A colmeia estica por 10 anos",
+			"resumen": "Racionam para que a comida dure os dez anos de Koumba.",
+			"explicacion": "Koumba diz a Carol que, segundo a própria colmeia, a maioria vai morrer de fome nos próximos dez anos. Aqui a colmeia planeja: a cada dia calcula a ração que faria durar a comida armazenada, mais o que ainda vai chegar (frutas, HDP, carne, leite), até completar dez anos, sem nunca ficar abaixo de 60% do necessário. Todos comem menos desde o início, então a fome chega antes para os mais vulneráveis, mas o colapso geral é adiado."
+		},
+		"diciembre": {
+			"nombre": "Junção em dezembro",
+			"resumen": "Logo depois da colheita do norte: celeiros cheios.",
+			"explicacion": "O cânone não diz em que data foi a Junção, e os grãos armazenados no mundo variam muito com o calendário de colheitas: em 1º de julho há ~1.385 milhões de toneladas e em 1º de dezembro, ~2.185. Com a Junção em dezembro, a colmeia começa com uns 200 dias a mais de comida. Todo o resto é igual ao cânone."
+		},
+		"ganado": {
+			"nombre": "Alimentar o gado",
+			"resumen": "Não soltam os animais: eles comem os mesmos grãos que as pessoas.",
+			"explicacion": "Na série, a colmeia solta o gado: os aldeões de Kusimayu o libertam ao se unirem. Aqui, para não deixar os animais morrerem de fome, a colmeia continua a alimentá-los como antes. Mas hoje o gado come ~1.100 milhões de toneladas de cereais por ano, mais do que as pessoas comem diretamente, então a comida armazenada dura a metade (de ~589 para ~288 dias). Em troca, mais animais morrem na fazenda e sua carne é mais bem aproveitada."
+		},
+		"resquicios": {
+			"nombre": "Com brechas",
+			"resumen": "Leituras generosas da regra: partos, ovos, mel e grãos de plantas mortas.",
+			"explicacion": "A regra é não matar nem ferir, mas há coisas que poderiam caber nela: deixar o gado continuar parindo para que o leite nunca acabe, coletar os ovos e o mel (para isso a colmeia continua alimentando o gado), recolher os grãos das lavouras que já estavam plantadas quando a planta morre sozinha ao amadurecer (70% do que teria sido colhido) e, do segundo ano em diante, plantar e recolher só quando a planta já secou (50% de uma colheita normal). Não é cânone: no vídeo, Cena diz que não podem colher trigo, milho nem arroz. Serve para ver que o problema é de regras, não de comida."
+		}
+	},
+	"escenario": {
+		"titulo": "Cenário",
+		"guardado": "salvo",
+		"modificado": "modificado",
+		"que_cambia": "O que muda em relação ao cânone",
+		"nada": "Nada: é a base com a qual os outros cenários são comparados.",
+		"movido": "Você moveu alavancas depois de carregá-lo: a lista já inclui suas mudanças."
+	},
+	"guardar": {
+		"boton": "Salvar",
+		"titulo": "Salvar cenário",
+		"descripcion": "Só são salvas as alavancas que você moveu em relação ao cânone.",
+		"nombre": "Nome",
+		"nombre_ejemplo": "Ex.: Junho com leite e ovos",
+		"explicacion": "O que é este cenário?",
+		"explicacion_ejemplo": "O que você supõe e por que vale a pena vê-lo",
+		"explicacion_ayuda": "Obrigatória. Deixei um rascunho com o que muda; explique com suas palavras.",
+		"cancelar": "Cancelar",
+		"guardando": "Salvando…",
+		"error": "Não foi possível salvar: {detalle}",
+		"borrador_igual": "Igual ao cânone: não move nenhuma alavanca.",
+		"borrador": "Ponto de partida: {partida}. Altera: {cambios}.",
+		"partida_canon": "o cânone",
+		"partida_otro": "“{nombre}”"
+	},
+	"palancas": {
+		"por_mes": "Por mês",
+		"automatico": "automático",
+		"si": "Sim",
+		"no": "Não"
+	},
+	"opciones": {
+		"completa": "Completa",
+		"fija": "Fixa",
+		"estirar": "Esticar",
+		"liberar": "Liberar",
+		"alimentar": "Alimentar"
+	},
+	"simulador": {
+		"error_api": "Não consegui falar com a API em {url}. O plur1bus-api está rodando? ({detalle})",
+		"simulando": "Simulando…",
+		"hero": {
+			"empieza": "A fome em massa começa em",
+			"detalle": "{fecha}: o dia em que a fome começa a matar mais do que todas as outras causas juntas. No início havia {dias, plural, one {# dia} many {# de dias} other {# dias}} de comida armazenada.",
+			"sin_etiqueta": "Em {anios, plural, one {# ano} many {# de anos} other {# anos}}",
+			"sin_valor": "não há fome em massa",
+			"sin_detalle": "A comida dá para todos neste cenário."
+		},
+		"kpi": {
+			"mitad": "População pela metade",
+			"nunca": "Nunca",
+			"mitad_detalle": "{duracion} após a Junção",
+			"en_anios": "em {anios, plural, one {# ano} many {# de anos} other {# anos}}",
+			"diez": "População em 10 anos",
+			"diez_detalle": "{pct} da colmeia",
+			"carga": "Capacidade de suporte",
+			"carga_detalle": "longo prazo: média entre os anos {desde} e {hasta}",
+			"koumba": "Koumba acerta?",
+			"si": "Sim",
+			"no": "Não",
+			"koumba_detalle": "{pct} morrem de fome em 10 anos"
+		},
+		"graficas": {
+			"poblacion": "População da colmeia",
+			"poblacion_sub": "Pessoas vivas ao fim de cada semana",
+			"poblacion_serie": "População",
+			"hambruna": "Começa a fome em massa",
+			"fuentes": "De onde vem a comida",
+			"fuentes_sub": "kcal consumidas por dia, por fonte",
+			"cuerpo": "Ração e reserva corporal",
+			"cuerpo_sub": "Ração: o que as pessoas comem em relação à sua necessidade normal. Reserva: o que resta no corpo médio.",
+			"racion": "Ração",
+			"reserva": "Reserva corporal"
+		},
+		"grupos": {
+			"cereal": "Cereais",
+			"inventario": "Outros estoques",
+			"frescos": "Frescos e frutas caídas",
+			"hdp": "HDP",
+			"carne": "Carne de animais"
+		},
+		"tabla": {
+			"titulo": "Tudo o que se comeu em {anios, plural, one {# ano} many {# de anos} other {# anos}}",
+			"fuente": "Fonte",
+			"inicio": "No início",
+			"consumido": "Consumido",
+			"parte": "Parte da dieta",
+			"bill_kcal": "{n} tri kcal"
+		}
+	},
+	"grafica": {
+		"ver_tabla": "Ver tabela",
+		"ver_grafica": "Ver gráfico",
+		"escala_log": "Escala log",
+		"escala_lineal": "Escala linear",
+		"semana": "Semana",
+		"total": "Total",
+		"aria": "{titulo}. Use as setas para percorrer as semanas."
+	},
+	"numeros": {
+		"miles_de_millones": "{n} bilhões",
+		"millones": "{n} milhões",
+		"miles": "{n} mil",
+		"abrev_millones": "{n} mi",
+		"abrev_miles": "{n} mil",
+		"billones": "{n} trilhões"
+	},
+	"duracion": {
+		"dias": "{n, plural, one {# dia} many {# de dias} other {# dias}}",
+		"meses": "{n, plural, one {# mês} many {# de meses} other {# meses}}",
+		"anios": "{n, plural, one {# ano} many {# de anos} other {# anos}}",
+		"y": "{a} e {b}"
+	},
+	"supuestos": {
+		"titulo": "Premissas do modelo",
+		"intro": "Cada número que o motor usa, com a faixa que você pode explorar e as fontes que o sustentam.",
+		"buscar": "Buscar (ex.: cereal, hdp, cães)",
+		"valores": "Valores",
+		"col_supuesto": "Premissa",
+		"col_valor": "Valor",
+		"col_rango": "Faixa",
+		"col_unidad": "Unidade",
+		"col_fuentes": "Fontes",
+		"rango": "{bajo} a {alto}",
+		"sin_fuente": "ainda sem fonte",
+		"confianza": {
+			"high": "alta",
+			"medium": "média",
+			"low": "baixa"
+		},
+		"tablas": "Tabelas por mês",
+		"col_tabla": "Tabela",
+		"ganado": "Rebanhos",
+		"col_grupo": "Grupo",
+		"col_cabezas": "Cabeças",
+		"col_kcal_cabeza": "kcal comestíveis por cabeça",
+		"col_vida": "Vida natural (dias)",
+		"col_pienso": "Ração animal (kcal/dia)",
+		"col_pastoreo": "Pastejo",
+		"cargando": "Carregando…",
+		"error": "Não consegui ler as premissas de {url} ({detalle})"
+	},
+	"canon": {
+		"titulo": "O que diz o cânone",
+		"intro": "A colmeia não pode matar, ferir nem interferir em nenhuma forma de vida, incluindo as plantas. Come o que já existia, as frutas que caem sozinhas, os animais que morrem de forma natural e o HDP dos humanos que morrem.",
+		"error": "Não consegui ler os dados de {url} ({detalle})",
+		"hdp_titulo": "As contas do HDP não fecham",
+		"cifra_mt": "{desde}–{hasta} Mt",
+		"hdp_necesario": "de HDP por dia seriam necessárias se todos tomassem a bebida do cânone (8 meias pintas com 8–12%)",
+		"cifra_miles_t": "{n} mil t",
+		"hdp_disponible": "é o que rendem as mortes diárias: {desde}–{hasta}% do necessário",
+		"cifra_dias_rango": "{desde}–{hasta} dias",
+		"hdp_union": "é quanto durariam os corpos da Junção para essa bebida",
+		"cifra_dias": "{n} dias",
+		"hdp_mundo": "de comida para o mundo inteiro equivalem, em calorias, aos {muertos} mortos da Junção",
+		"hdp_nota": "Cada corpo alimenta uma pessoa por cerca de {dias, plural, one {# dia} many {# de dias} other {# dias}}. Em calorias, o HDP é quase simbólico: serve como proteína para uma minoria, não como base da dieta.",
+		"hechos": "Fatos do cânone",
+		"en_modelo": "No modelo: {texto}",
+		"sin_hechos": "Os fatos pesquisados do cânone aparecem aqui assim que o conjunto de fontes for carregado na API."
+	}
+}

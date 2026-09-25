@@ -2,8 +2,10 @@
 	// Áreas apiladas (parte-del-todo en el tiempo): de dónde sale cada kcal que
 	// come la colmena. Bandas separadas por un hueco de 2px del color de fondo,
 	// leyenda siempre visible, tooltip con todas las bandas y el total, y tabla.
-	import { filasMuestreadas, ticksAnio, ticksRedondos, type SerieGrafica } from './escalas';
-	import { mesAnio } from '$lib/formato';
+	import { filasMuestreadas, margenEje, ticksAnio, ticksRedondos, type SerieGrafica } from './escalas';
+	import { _, locale } from 'svelte-i18n';
+	import { formato } from '$lib/formato';
+	import { esRTL } from '$lib/idiomas';
 
 	let {
 		titulo,
@@ -21,12 +23,11 @@
 		alto?: number;
 	} = $props();
 
-	const M = { top: 14, right: 24, bottom: 26, left: 64 };
+	const M = { top: 14, right: 24, bottom: 26 };
 	let ancho = $state(640);
 	let hover = $state<number | null>(null);
 	let verTabla = $state(false);
 
-	const w = $derived(Math.max(120, ancho - M.left - M.right));
 	const h = $derived(alto - M.top - M.bottom);
 	const n = $derived(x.length);
 
@@ -42,6 +43,8 @@
 	const ticksY = $derived(ticksRedondos(Math.max(1e-9, ...totales), 4));
 	const topeY = $derived(ticksY[ticksY.length - 1]);
 	const ticksX = $derived(ticksAnio(x));
+	const izq = $derived(margenEje(ticksY.map(formatoY)));
+	const w = $derived(Math.max(120, ancho - izq - M.right));
 
 	const sx = (i: number) => (n <= 1 ? 0 : (i / (n - 1)) * w);
 	const sy = (v: number) => h - (v / topeY) * h;
@@ -70,6 +73,7 @@
 	}
 
 	const filas = $derived(filasMuestreadas(n, 13));
+	const dirPagina = $derived(esRTL($locale ?? '') ? 'rtl' : 'ltr');
 	const deArribaAbajo = $derived([...series].reverse());
 </script>
 
@@ -80,7 +84,7 @@
 			{#if subtitulo}<p>{subtitulo}</p>{/if}
 		</div>
 		<button type="button" class="ver-tabla" onclick={() => (verTabla = !verTabla)} aria-pressed={verTabla}>
-			{verTabla ? 'Ver gráfica' : 'Ver tabla'}
+			{verTabla ? $_('grafica.ver_grafica') : $_('grafica.ver_tabla')}
 		</button>
 	</figcaption>
 
@@ -95,15 +99,15 @@
 			<table>
 				<thead>
 					<tr>
-						<th>Semana</th>
+						<th>{$_('grafica.semana')}</th>
 						{#each series as s (s.clave)}<th>{s.nombre}</th>{/each}
-						<th>Total</th>
+						<th>{$_('grafica.total')}</th>
 					</tr>
 				</thead>
 				<tbody>
 					{#each filas as i (i)}
 						<tr>
-							<td>{mesAnio(x[i])}</td>
+							<td>{$formato.mesAnio(x[i])}</td>
 							{#each series as s (s.clave)}<td>{formatoY(s.valores[i])}</td>{/each}
 							<td>{formatoY(totales[i])}</td>
 						</tr>
@@ -112,7 +116,9 @@
 			</table>
 		</div>
 	{:else}
-		<div class="lienzo" bind:clientWidth={ancho}>
+		<!-- El tiempo corre de izquierda a derecha también en árabe: el lienzo es siempre LTR
+		     (ejes, anclas de texto y posición del tooltip); el contenido del tooltip sigue a la página. -->
+		<div class="lienzo" dir="ltr" bind:clientWidth={ancho}>
 			<svg
 				width={ancho}
 				height={alto}
@@ -120,19 +126,19 @@
 				aria-valuemin={0}
 				aria-valuemax={n - 1}
 				aria-valuenow={hover ?? n - 1}
-				aria-valuetext={mesAnio(x[hover ?? n - 1])}
-				aria-label={`${titulo}. Usa las flechas para recorrer las semanas.`}
+				aria-valuetext={$formato.mesAnio(x[hover ?? n - 1])}
+				aria-label={$_('grafica.aria', { values: { titulo } })}
 				tabindex="0"
 				onkeydown={teclado}
 				onblur={() => (hover = null)}
 			>
-				<g transform={`translate(${M.left},${M.top})`}>
+				<g transform={`translate(${izq},${M.top})`}>
 					{#each ticksY as t (t)}
 						<line class="grid" x1="0" x2={w} y1={sy(t)} y2={sy(t)} />
 						<text class="tick" x="-10" y={sy(t)} dy="0.32em" text-anchor="end">{formatoY(t)}</text>
 					{/each}
 					{#each ticksX as t (t.i)}
-						<text class="tick" x={sx(t.i)} y={h + 18} text-anchor="middle">{t.etiqueta}</text>
+						<text class="tick" x={sx(t.i)} y={h + 18} text-anchor="middle">{$formato.anio(x[t.i])}</text>
 					{/each}
 
 					{#each series as s, k (s.clave)}
@@ -162,9 +168,9 @@
 			</svg>
 
 			{#if hover !== null}
-				{@const izquierda = M.left + sx(hover)}
-				<div class="tooltip" style={izquierda > ancho / 2 ? `right:${ancho - izquierda + 12}px` : `left:${izquierda + 12}px`}>
-					<div class="tt-fecha">{mesAnio(x[hover])}</div>
+				{@const izquierda = izq + sx(hover)}
+				<div class="tooltip" dir={dirPagina} style={izquierda > ancho / 2 ? `right:${ancho - izquierda + 12}px` : `left:${izquierda + 12}px`}>
+					<div class="tt-fecha">{$formato.mesAnio(x[hover])}</div>
 					{#each deArribaAbajo as s (s.clave)}
 						<div class="tt-fila">
 							<span class="clave-area" style="background:{s.color}"></span>
@@ -174,7 +180,7 @@
 					{/each}
 					<div class="tt-fila tt-total">
 						<strong>{formatoY(totales[hover])}</strong>
-						<span class="tt-nombre">Total</span>
+						<span class="tt-nombre">{$_('grafica.total')}</span>
 					</div>
 				</div>
 			{/if}

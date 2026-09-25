@@ -17,6 +17,7 @@
 		"db:studio": "drizzle-kit studio"
 	},
 	"devDependencies": {
+		"@formatjs/icu-messageformat-parser": "^2.11.4",
 		"@internationalized/date": "^3.12.4",
 		"@lucide/svelte": "^1.47.0",
 		"@sveltejs/adapter-node": "^5.5.0",
@@ -36,6 +37,7 @@
 	},
 	"dependencies": {
 		"better-sqlite3": "^13.0.3",
-		"drizzle-orm": "^0.45.3"
+		"drizzle-orm": "^0.45.3",
+		"svelte-i18n": "^4.0.1"
 	}
 }

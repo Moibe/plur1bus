@@ -4,6 +4,7 @@ import type { Escenario, EscenarioGuardado } from './tipos';
 
 class Guardados {
 	lista = $state<EscenarioGuardado[]>([]);
+	/** detalle técnico del último error al cargar; la sidebar lo pone en su idioma */
 	error = $state<string | null>(null);
 
 	async recargar() {
@@ -13,18 +14,21 @@ class Guardados {
 			this.lista = await r.json();
 			this.error = null;
 		} catch (e) {
-			this.error = `No se pudieron cargar los escenarios guardados (${(e as Error).message})`;
+			this.error = (e as Error).message;
 		}
 	}
 
-	async guardar(nombre: string, descripcion: string, parametros: Escenario) {
+	/** Regresa la fila creada: su id identifica al escenario activo en la sidebar. */
+	async guardar(nombre: string, descripcion: string, parametros: Escenario): Promise<EscenarioGuardado> {
 		const r = await fetch('/api/escenarios', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ nombre, descripcion, parametros })
 		});
 		if (!r.ok) throw new Error(await r.text());
+		const creado: EscenarioGuardado = await r.json();
 		await this.recargar();
+		return creado;
 	}
 
 	async borrar(id: number) {

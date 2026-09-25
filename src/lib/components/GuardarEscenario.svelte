@@ -1,9 +1,11 @@
 <script lang="ts">
 	// Botón + modal para guardar el escenario actual con un nombre y una explicación.
 	// La explicación es obligatoria: todo escenario tiene que decir qué es.
+	import { _ } from 'svelte-i18n';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Button } from '$lib/components/ui/button';
-	import { estado } from '$lib/estado.svelte';
+	import { estado, textosDeOrigen } from '$lib/estado.svelte';
+	import { formato } from '$lib/formato';
 	import { guardados } from '$lib/guardados.svelte';
 	import { cambiosEnTexto, describirCambios } from '$lib/palancas';
 
@@ -14,17 +16,20 @@
 	let error = $state<string | null>(null);
 
 	const listo = $derived(!!nombre.trim() && !!descripcion.trim());
+	const esCanon = () => estado.origen.tipo === 'preset' && estado.origen.id === 'canon';
 
 	// Borrador para no empezar en blanco: de dónde parte y qué palancas cambia.
 	function borrador(): string {
-		const cambios = cambiosEnTexto(describirCambios(estado.cambios(), estado.esquema));
-		if (!cambios) return 'Igual al canon: no mueve ninguna palanca.';
-		const partida = estado.origen.nombre === 'Canon estricto' ? 'el canon' : `«${estado.origen.nombre}»`;
-		return `Parte de ${partida}. Cambia: ${cambios}.`;
+		const cambios = cambiosEnTexto(describirCambios(estado.cambios(), estado.esquema, $formato, $_));
+		if (!cambios) return $_('guardar.borrador_igual');
+		const partida = esCanon()
+			? $_('guardar.partida_canon')
+			: $_('guardar.partida_otro', { values: { nombre: textosDeOrigen(estado.origen, $_).nombre } });
+		return $_('guardar.borrador', { values: { partida, cambios } });
 	}
 
 	function abrir() {
-		nombre = estado.origen.guardado || estado.origen.nombre !== 'Canon estricto' ? estado.origen.nombre : '';
+		nombre = esCanon() ? '' : textosDeOrigen(estado.origen, $_).nombre;
 		descripcion = borrador();
 		error = null;
 		abierto = true;
@@ -35,40 +40,46 @@
 		if (!listo) return;
 		guardando = true;
 		try {
-			await guardados.guardar(nombre.trim(), descripcion.trim(), estado.cambios());
-			estado.origen = { nombre: nombre.trim(), explicacion: descripcion.trim(), base: estado.cambios(), guardado: true };
+			const creado = await guardados.guardar(nombre.trim(), descripcion.trim(), estado.cambios());
+			estado.origen = {
+				tipo: 'guardado',
+				id: creado.id,
+				nombre: creado.nombre,
+				explicacion: creado.descripcion,
+				base: estado.cambios()
+			};
 			abierto = false;
 		} catch (e) {
-			error = `No se pudo guardar: ${(e as Error).message}`;
+			error = $_('guardar.error', { values: { detalle: (e as Error).message } });
 		} finally {
 			guardando = false;
 		}
 	}
 </script>
 
-<Button variant="outline" size="sm" onclick={abrir}>Guardar</Button>
+<Button variant="outline" size="sm" onclick={abrir}>{$_('guardar.boton')}</Button>
 
 <Dialog.Root bind:open={abierto}>
 	<Dialog.Content class="modal-glass">
 		<Dialog.Header>
-			<Dialog.Title>Guardar escenario</Dialog.Title>
-			<Dialog.Description>Se guardan solo las palancas que moviste respecto al canon.</Dialog.Description>
+			<Dialog.Title>{$_('guardar.titulo')}</Dialog.Title>
+			<Dialog.Description>{$_('guardar.descripcion')}</Dialog.Description>
 		</Dialog.Header>
 		<form onsubmit={guardar} class="formulario">
 			<label>
-				<span>Nombre</span>
+				<span>{$_('guardar.nombre')}</span>
 				<!-- svelte-ignore a11y_autofocus -->
-				<input bind:value={nombre} maxlength="80" placeholder="Ej. Junio con leche y huevo" autofocus />
+				<input bind:value={nombre} maxlength="80" placeholder={$_('guardar.nombre_ejemplo')} dir="auto" autofocus />
 			</label>
 			<label>
-				<span>¿Qué es este escenario?</span>
-				<textarea bind:value={descripcion} maxlength="1000" rows="5" placeholder="Qué supones y por qué vale la pena verlo"></textarea>
-				<small>Obligatoria. Te dejé un borrador con lo que cambia; cuéntalo con tus palabras.</small>
+				<span>{$_('guardar.explicacion')}</span>
+				<textarea bind:value={descripcion} maxlength="1000" rows="5" placeholder={$_('guardar.explicacion_ejemplo')} dir="auto"></textarea>
+				<small>{$_('guardar.explicacion_ayuda')}</small>
 			</label>
 			{#if error}<p class="error">{error}</p>{/if}
 			<Dialog.Footer>
-				<Button variant="ghost" type="button" onclick={() => (abierto = false)}>Cancelar</Button>
-				<Button type="submit" disabled={guardando || !listo}>{guardando ? 'Guardando…' : 'Guardar'}</Button>
+				<Button variant="ghost" type="button" onclick={() => (abierto = false)}>{$_('guardar.cancelar')}</Button>
+				<Button type="submit" disabled={guardando || !listo}>{guardando ? $_('guardar.guardando') : $_('guardar.boton')}</Button>
 			</Dialog.Footer>
 		</form>
 	</Dialog.Content>

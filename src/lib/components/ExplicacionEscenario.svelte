@@ -1,21 +1,24 @@
 <script lang="ts">
 	// Qué es el escenario activo y qué palancas mueve respecto al canon. La lista
 	// sale de los valores que se están simulando, así que nunca queda desfasada.
-	import { estado } from '$lib/estado.svelte';
+	import { _ } from 'svelte-i18n';
+	import { estado, textosDeOrigen } from '$lib/estado.svelte';
+	import { formato } from '$lib/formato';
 	import { describirCambios } from '$lib/palancas';
 
-	const cambios = $derived(describirCambios(estado.cambios(), estado.esquema));
+	const cambios = $derived(describirCambios(estado.cambios(), estado.esquema, $formato, $_));
+	const textos = $derived(textosDeOrigen(estado.origen, $_));
 </script>
 
 <section class="explicacion" aria-labelledby="escenario-activo">
 	<div class="titulo">
-		<h3 id="escenario-activo">{estado.origen.nombre}</h3>
-		{#if estado.origen.guardado}<span class="marca">guardado</span>{/if}
-		{#if estado.modificado}<span class="marca modificado">modificado</span>{/if}
+		<h3 id="escenario-activo">{textos.nombre}</h3>
+		{#if estado.origen.tipo === 'guardado'}<span class="marca">{$_('escenario.guardado')}</span>{/if}
+		{#if estado.modificado}<span class="marca modificado">{$_('escenario.modificado')}</span>{/if}
 	</div>
-	<p>{estado.origen.explicacion}</p>
+	<p>{textos.explicacion}</p>
 
-	<h4>Qué cambia respecto al canon</h4>
+	<h4>{$_('escenario.que_cambia')}</h4>
 	{#if cambios.length}
 		<ul>
 			{#each cambios as c (c.clave)}
@@ -23,10 +26,10 @@
 			{/each}
 		</ul>
 	{:else}
-		<p class="base">Nada: es la base contra la que se comparan los demás escenarios.</p>
+		<p class="base">{$_('escenario.nada')}</p>
 	{/if}
 	{#if estado.modificado}
-		<p class="aviso">Moviste palancas después de cargarlo: la lista ya incluye tus cambios.</p>
+		<p class="aviso">{$_('escenario.movido')}</p>
 	{/if}
 </section>
 
@@ -95,7 +98,7 @@
 	li strong {
 		font-weight: 600;
 		color: #fff;
-		text-align: right;
+		text-align: end;
 	}
 	.base,
 	.aviso {

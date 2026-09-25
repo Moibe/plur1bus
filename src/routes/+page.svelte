@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { _, locale } from 'svelte-i18n';
 	import GraficaApilada from '$lib/charts/GraficaApilada.svelte';
 	import GraficaLineas from '$lib/charts/GraficaLineas.svelte';
 	import Kpi from '$lib/components/Kpi.svelte';
@@ -8,28 +8,44 @@
 	import ExplicacionEscenario from '$lib/components/ExplicacionEscenario.svelte';
 	import { obtenerEscenario, simular, API_URL } from '$lib/api';
 	import { estado } from '$lib/estado.svelte';
-	import { billonesKcal, duracion, fechaLarga, mesAnio, millones, numero, pct, personas } from '$lib/formato';
+	import { formato } from '$lib/formato';
 	import type { Resultado } from '$lib/tipos';
 
 	let resultado = $state<Resultado | null>(null);
 	let cargando = $state(false);
-	let error = $state<string | null>(null);
+	/** detalle técnico si no se pudo pedir el esquema (el aviso se arma en el idioma activo) */
+	let errorApi = $state<string | null>(null);
+	let errorSimulacion = $state<string | null>(null);
 
-	onMount(async () => {
-		try {
-			estado.iniciar(await obtenerEscenario());
-		} catch (e) {
-			error = `No pude hablar con la API en ${API_URL}. ¿Está corriendo plur1bus-api? (${(e as Error).message})`;
-		}
+	// El esquema trae etiquetas y ayudas en el idioma activo: se vuelve a pedir
+	// cuando cambia (los valores de las palancas se conservan).
+	$effect(() => {
+		const idioma = $locale;
+		if (!idioma) return;
+		let vigente = true;
+		obtenerEscenario(idioma)
+			.then((esquema) => {
+				if (!vigente) return;
+				estado.iniciar(esquema);
+				errorApi = null;
+			})
+			.catch((e: Error) => {
+				if (vigente) errorApi = e.message;
+			});
+		return () => {
+			vigente = false;
+		};
 	});
 
-	// Cada cambio de palancas vuelve a simular (con pausa corta para no disparar
-	// una corrida por cada pixel del slider). Mientras llega, se queda lo anterior.
+	// Cada cambio de palancas (o de idioma: los nombres de las fuentes vienen de la
+	// API) vuelve a simular, con pausa corta para no disparar una corrida por cada
+	// pixel del slider. Mientras llega, se queda lo anterior.
 	let temporizador: ReturnType<typeof setTimeout> | undefined;
 	let control: AbortController | undefined;
 	$effect(() => {
 		const valores = $state.snapshot(estado.valores);
-		if (!estado.esquema) return;
+		const idioma = $locale;
+		if (!estado.esquema || !idioma) return;
 		clearTimeout(temporizador);
 		temporizador = setTimeout(async () => {
 			control?.abort();
@@ -37,10 +53,10 @@
 			control = mio;
 			cargando = true;
 			try {
-				resultado = await simular(valores, mio.signal);
-				error = null;
+				resultado = await simular(valores, idioma, mio.signal);
+				errorSimulacion = null;
 			} catch (e) {
-				if ((e as Error).name !== 'AbortError') error = (e as Error).message;
+				if ((e as Error).name !== 'AbortError') errorSimulacion = (e as Error).message;
 			} finally {
 				// una corrida cancelada no apaga el "simulando…" de la que la reemplazó
 				if (control === mio) cargando = false;
@@ -48,38 +64,44 @@
 		}, 250);
 	});
 
+	const error = $derived(
+		errorApi ? $_('simulador.error_api', { values: { url: API_URL, detalle: errorApi } }) : errorSimulacion
+	);
+
 	// Cinco grupos de fuentes: más series que eso ya no se distinguen por color.
 	const GRUPOS = [
-		{ clave: 'cereal', nombre: 'Cereal', color: 'var(--serie-1)', pools: ['cereal'] },
+		{ clave: 'cereal', color: 'var(--serie-1)', pools: ['cereal'] },
 		{
 			clave: 'inventario',
-			nombre: 'Otros inventarios',
 			color: 'var(--serie-2)',
 			pools: ['oleaginosas', 'aceites', 'azucar', 'legumbres', 'tuberculos', 'procesados', 'congelados']
 		},
-		{ clave: 'frescos', nombre: 'Frescos y fruta caída', color: 'var(--serie-3)', pools: ['perecederos', 'conservas'] },
-		{ clave: 'hdp', nombre: 'HDP', color: 'var(--serie-4)', pools: ['hdp'] },
-		{ clave: 'carne', nombre: 'Carne de animales', color: 'var(--serie-5)', pools: ['carne_animal'] }
+		{ clave: 'frescos', color: 'var(--serie-3)', pools: ['perecederos', 'conservas'] },
+		{ clave: 'hdp', color: 'var(--serie-4)', pools: ['hdp'] },
+		{ clave: 'carne', color: 'var(--serie-5)', pools: ['carne_animal'] }
 	];
 
 	const r = $derived(resultado);
 	const s = $derived(r?.resumen);
+	const f = $derived($formato);
 
 	const seriePoblacion = $derived(
-		r ? [{ clave: 'poblacion', nombre: 'Población', color: 'var(--serie-1)', valores: r.serie.poblacion }] : []
+		r
+			? [{ clave: 'poblacion', nombre: $_('simulador.graficas.poblacion_serie'), color: 'var(--serie-1)', valores: r.serie.poblacion }]
+			: []
 	);
 	const marcas = $derived.by(() => {
 		if (!r || s?.dia_inicio_hambruna == null) return [];
-		return [{ i: Math.floor(s.dia_inicio_hambruna / 7), etiqueta: 'Empieza la hambruna' }];
+		return [{ i: Math.floor(s.dia_inicio_hambruna / 7), etiqueta: $_('simulador.graficas.hambruna') }];
 	});
 	const seriesFuentes = $derived(
 		r
 			? GRUPOS.map((g) => ({
 					clave: g.clave,
-					nombre: g.nombre,
+					nombre: $_(`simulador.grupos.${g.clave}`),
 					color: g.color,
 					valores: r.serie.dia.map(
-						(_, i) => g.pools.reduce((acc, p) => acc + (r.serie.consumo_kcal[p]?.[i] ?? 0), 0) / r.serie.dias_tramo[i]
+						(_d, i) => g.pools.reduce((acc, p) => acc + (r.serie.consumo_kcal[p]?.[i] ?? 0), 0) / r.serie.dias_tramo[i]
 					)
 				}))
 			: []
@@ -87,21 +109,22 @@
 	const seriesCuerpo = $derived(
 		r
 			? [
-					{ clave: 'racion', nombre: 'Ración', color: 'var(--serie-1)', valores: r.serie.racion },
-					{ clave: 'reserva', nombre: 'Reserva corporal', color: 'var(--serie-2)', valores: r.serie.reserva_corporal }
+					{ clave: 'racion', nombre: $_('simulador.graficas.racion'), color: 'var(--serie-1)', valores: r.serie.racion },
+					{ clave: 'reserva', nombre: $_('simulador.graficas.reserva'), color: 'var(--serie-2)', valores: r.serie.reserva_corporal }
 				]
 			: []
 	);
 	const principales = $derived(
-		r ? [...r.fuentes].filter((f) => f.consumido_kcal > 0).sort((a, b) => b.consumido_kcal - a.consumido_kcal) : []
+		r ? [...r.fuentes].filter((x) => x.consumido_kcal > 0).sort((a, b) => b.consumido_kcal - a.consumido_kcal) : []
 	);
 	const anios = $derived(Number(estado.valores.anios ?? 15));
+	const billones = (kcal: number) => $_('simulador.tabla.bill_kcal', { values: { n: f.numero(kcal / 1e12) } });
 </script>
 
 <div class="simulador">
 	<aside class="panel-palancas">
 		<header class="panel-titulo">
-			<h2>Escenario</h2>
+			<h2>{$_('escenario.titulo')}</h2>
 			<GuardarEscenario />
 		</header>
 		{#if estado.esquema}
@@ -118,85 +141,95 @@
 		{#if r && s}
 			<header class="hero">
 				{#if s.dia_inicio_hambruna != null}
-					<span class="hero-etiqueta">La hambruna empieza en</span>
-					<span class="hero-valor">{duracion(s.dia_inicio_hambruna)}</span>
+					<span class="hero-etiqueta">{$_('simulador.hero.empieza')}</span>
+					<span class="hero-valor">{f.duracion(s.dia_inicio_hambruna)}</span>
 					<span class="hero-detalle">
-						{fechaLarga(s.fecha_inicio_hambruna)}: el día en que el hambre empieza a matar más que todas las demás causas juntas. Al
-						inicio había {numero(s.dias_de_comida_al_inicio)} días de comida guardada.
+						{$_('simulador.hero.detalle', {
+							values: { fecha: f.fechaLarga(s.fecha_inicio_hambruna), dias: Math.round(s.dias_de_comida_al_inicio) }
+						})}
 					</span>
 				{:else}
-					<span class="hero-etiqueta">En {anios} años</span>
-					<span class="hero-valor">no hay hambruna</span>
-					<span class="hero-detalle">La comida alcanza para todos en este escenario.</span>
+					<span class="hero-etiqueta">{$_('simulador.hero.sin_etiqueta', { values: { anios } })}</span>
+					<span class="hero-valor">{$_('simulador.hero.sin_valor')}</span>
+					<span class="hero-detalle">{$_('simulador.hero.sin_detalle')}</span>
 				{/if}
 			</header>
 
 			<div class="kpis">
 				<Kpi
-					etiqueta="Población a la mitad"
-					valor={s.fecha_mitad_poblacion ? mesAnio(s.fecha_mitad_poblacion) : 'Nunca'}
-					detalle={s.dia_mitad_poblacion != null ? `a ${duracion(s.dia_mitad_poblacion)} de la Unión` : `en ${anios} años`}
+					etiqueta={$_('simulador.kpi.mitad')}
+					valor={s.fecha_mitad_poblacion ? f.mesAnio(s.fecha_mitad_poblacion) : $_('simulador.kpi.nunca')}
+					detalle={s.dia_mitad_poblacion != null
+						? $_('simulador.kpi.mitad_detalle', { values: { duracion: f.duracion(s.dia_mitad_poblacion) } })
+						: $_('simulador.kpi.en_anios', { values: { anios } })}
 				/>
 				<Kpi
-					etiqueta="Población a 10 años"
-					valor={personas(s.poblacion_10_anios)}
-					detalle={`${pct(s.poblacion_10_anios / s.poblacion_inicial, 1)} de la colmena`}
+					etiqueta={$_('simulador.kpi.diez')}
+					valor={f.personas(s.poblacion_10_anios)}
+					detalle={$_('simulador.kpi.diez_detalle', { values: { pct: f.pct(s.poblacion_10_anios / s.poblacion_inicial, 1) } })}
 				/>
 				<Kpi
-					etiqueta="Capacidad de carga"
-					valor={personas(s.capacidad_de_carga)}
-					detalle={`largo plazo: promedio entre los años ${numero(s.capacidad_ventana_anios[0], 1)} y ${numero(s.capacidad_ventana_anios[1], 1)}`}
+					etiqueta={$_('simulador.kpi.carga')}
+					valor={f.personas(s.capacidad_de_carga)}
+					detalle={$_('simulador.kpi.carga_detalle', {
+						values: { desde: f.numero(s.capacidad_ventana_anios[0], 1), hasta: f.numero(s.capacidad_ventana_anios[1], 1) }
+					})}
 				/>
 				<Kpi
-					etiqueta="¿Acierta Koumba?"
-					valor={s.koumba_acierta ? 'Sí' : 'No'}
-					detalle={`${pct(s.muertos_hambre_10_anios_frac)} muere de hambre en 10 años`}
+					etiqueta={$_('simulador.kpi.koumba')}
+					valor={s.koumba_acierta ? $_('simulador.kpi.si') : $_('simulador.kpi.no')}
+					detalle={$_('simulador.kpi.koumba_detalle', { values: { pct: f.pct(s.muertos_hambre_10_anios_frac) } })}
 				/>
 			</div>
 
 			<GraficaLineas
-				titulo="Población de la colmena"
-				subtitulo="Personas vivas al cierre de cada semana"
+				titulo={$_('simulador.graficas.poblacion')}
+				subtitulo={$_('simulador.graficas.poblacion_sub')}
 				x={r.serie.fecha}
 				series={seriePoblacion}
-				formatoY={millones}
+				formatoY={f.millones}
 				area
 				permitirLog
 				{marcas}
 			/>
 
 			<GraficaApilada
-				titulo="De dónde sale la comida"
-				subtitulo="kcal consumidas al día, por fuente"
+				titulo={$_('simulador.graficas.fuentes')}
+				subtitulo={$_('simulador.graficas.fuentes_sub')}
 				x={r.serie.fecha}
 				series={seriesFuentes}
-				formatoY={billonesKcal}
+				formatoY={f.billonesKcal}
 			/>
 
 			<GraficaLineas
-				titulo="Ración y reserva corporal"
-				subtitulo="Ración: lo que come la gente frente a su requerimiento normal. Reserva: lo que le queda al cuerpo promedio."
+				titulo={$_('simulador.graficas.cuerpo')}
+				subtitulo={$_('simulador.graficas.cuerpo_sub')}
 				x={r.serie.fecha}
 				series={seriesCuerpo}
-				formatoY={(v) => pct(v)}
+				formatoY={(v) => f.pct(v)}
 				yMax={1}
 				alto={200}
 			/>
 
 			<section class="tarjeta-grafica">
-				<h4>Todo lo que se comió en {anios} años</h4>
+				<h4>{$_('simulador.tabla.titulo', { values: { anios } })}</h4>
 				<div class="tabla-scroll">
 					<table>
 						<thead>
-							<tr><th>Fuente</th><th>Al inicio</th><th>Consumido</th><th>Parte de la dieta</th></tr>
+							<tr>
+								<th>{$_('simulador.tabla.fuente')}</th>
+								<th>{$_('simulador.tabla.inicio')}</th>
+								<th>{$_('simulador.tabla.consumido')}</th>
+								<th>{$_('simulador.tabla.parte')}</th>
+							</tr>
 						</thead>
 						<tbody>
-							{#each principales as f (f.clave)}
+							{#each principales as fuente (fuente.clave)}
 								<tr>
-									<td>{f.nombre}</td>
-									<td>{f.inicial_kcal ? `${numero(f.inicial_kcal / 1e12)} bill. kcal` : '—'}</td>
-									<td>{numero(f.consumido_kcal / 1e12)} bill. kcal</td>
-									<td>{pct(f.frac_consumo, 1)}</td>
+									<td>{fuente.nombre}</td>
+									<td>{fuente.inicial_kcal ? billones(fuente.inicial_kcal) : '—'}</td>
+									<td>{billones(fuente.consumido_kcal)}</td>
+									<td>{f.pct(fuente.frac_consumo, 1)}</td>
 								</tr>
 							{/each}
 						</tbody>
@@ -204,7 +237,7 @@
 				</div>
 			</section>
 		{:else if !error}
-			<p class="espera">Simulando…</p>
+			<p class="espera">{$_('simulador.simulando')}</p>
 		{/if}
 	</section>
 </div>
@@ -222,8 +255,9 @@
 		min-height: 0;
 	}
 	.panel-palancas {
-		padding: 0.25rem 0.9rem 1rem 0.25rem;
-		border-right: 1px solid rgba(255, 255, 255, 0.1);
+		padding-block: 0.25rem 1rem;
+		padding-inline: 0.25rem 0.9rem;
+		border-inline-end: 1px solid rgba(255, 255, 255, 0.1);
 	}
 	.panel-titulo {
 		display: flex;
@@ -241,7 +275,8 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
-		padding: 0.25rem 0.5rem 1rem 0;
+		padding-block: 0.25rem 1rem;
+		padding-inline: 0 0.5rem;
 		transition: opacity 0.2s ease;
 	}
 	.resultados.cargando {
@@ -292,7 +327,7 @@
 			overflow: visible;
 		}
 		.panel-palancas {
-			border-right: none;
+			border-inline-end: none;
 			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 		}
 	}

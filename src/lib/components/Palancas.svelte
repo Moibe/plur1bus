@@ -1,12 +1,21 @@
 <script lang="ts">
 	// Controles del escenario, armados directo del esquema que regresa la API
 	// (GET /escenario): rangos, pasos, etiquetas y textos viven en el motor.
+	// Etiquetas y ayudas llegan traducidas por la API (?lang=); aquí solo se
+	// traducen las opciones y el formato de los valores.
+	import { _, locale } from 'svelte-i18n';
 	import { Slider } from '$lib/components/ui/slider';
 	import { Switch } from '$lib/components/ui/switch';
-	import { ETIQUETAS_OPCION, mostrarValor as mostrar } from '$lib/palancas';
+	import { formato } from '$lib/formato';
+	import { esRTL } from '$lib/idiomas';
+	import { mostrarValor } from '$lib/palancas';
 	import type { Escenario, EsquemaEscenario, Palanca } from '$lib/tipos';
 
 	let { esquema, valores = $bindable() }: { esquema: EsquemaEscenario; valores: Escenario } = $props();
+
+	const mostrar = (p: Palanca, v: unknown) => mostrarValor(p, v, $formato, $_);
+	// En árabe los sliders crecen de derecha a izquierda, como el resto de la página.
+	const dir = $derived(esRTL($locale ?? '') ? 'rtl' : 'ltr');
 
 	const grupos = $derived.by(() => {
 		const orden: string[] = [];
@@ -47,7 +56,7 @@
 									class:activa={valores[clave] === op}
 									onclick={() => (valores = { ...valores, [clave]: op })}
 								>
-									{ETIQUETAS_OPCION[op] ?? op}
+									{$_(`opciones.${op}`)}
 								</button>
 							{/each}
 						</div>
@@ -64,7 +73,7 @@
 						<div class="fila">
 							<span class="etiqueta">{p.etiqueta}</span>
 							<label class="auto">
-								<span>Por mes</span>
+								<span>{$_('palancas.por_mes')}</span>
 								<Switch
 									checked={valores[clave] == null}
 									onCheckedChange={(auto) => (valores = { ...valores, [clave]: auto ? null : 2000 })}
@@ -79,6 +88,7 @@
 									{min}
 									{max}
 									step={p.paso ?? 1}
+									{dir}
 									onValueCommit={(v: number) => (valores = { ...valores, [clave]: v })}
 								/>
 								<span class="valor">{mostrar(p, valores[clave])}</span>
@@ -95,6 +105,7 @@
 							min={p.minimum ?? 0}
 							max={p.maximum ?? 1}
 							step={p.paso ?? 1}
+							{dir}
 							onValueChange={(v: number) => (valores = { ...valores, [clave]: v })}
 						/>
 					{/if}

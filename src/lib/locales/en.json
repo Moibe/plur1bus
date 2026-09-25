@@ -1,0 +1,223 @@
+{
+	"nav": {
+		"inicio": "Home",
+		"simulador": "Simulator",
+		"supuestos": "Assumptions",
+		"canon": "Canon"
+	},
+	"idioma": {
+		"cambiar": "Change language",
+		"actual": "Language: {idioma}"
+	},
+	"sidebar": {
+		"escenarios": "Scenarios",
+		"guardados": "Saved",
+		"vacio": "You haven’t saved any yet.",
+		"error_cargar": "Couldn’t load saved scenarios ({detalle})",
+		"borrar_aria": "Delete {nombre}",
+		"replegar": "Collapse sidebar",
+		"mostrar": "Show sidebar",
+		"cambia": "Changes: {cambios}.",
+		"igual_canon": "Same as canon."
+	},
+	"borrar": {
+		"titulo": "Delete “{nombre}”?",
+		"descripcion": "The saved scenario will be permanently deleted.",
+		"cancelar": "Cancel",
+		"confirmar": "Delete",
+		"borrando": "Deleting…",
+		"error": "Couldn’t delete: {detalle}"
+	},
+	"presets": {
+		"canon": {
+			"nombre": "Strict canon",
+			"resumen": "What the show depicts, with nothing changed.",
+			"explicacion": "The hive can’t kill or harm any form of life, not even a plant: it doesn’t harvest, fish or slaughter animals. It eats what was already stored, fruit that falls on its own, animals that die naturally and the HDP from humans who die. It releases livestock and pets, keeps milking the cows, and everyone eats what they need until the food runs out. The Joining is in July, the month with the least stored grain of the year; the canon’s clues point to late spring or summer."
+		},
+		"cena": {
+			"nombre": "Cena’s ration",
+			"resumen": "From day one, the ration implied by Cena’s video: ~67%.",
+			"explicacion": "In the episode 6 video, John Cena says someone his size needs eight 300-kcal cartons a day: 2,400 kcal. But Cena weighs about 114 kg, and a body like that burns close to 3,000, so that diet is already a deficit of ~21 kcal per kilo. Scaled to an average person, it comes to ~67% of what they need. Here the hive hands out that fixed ration from day one: the food lasts longer, but those who were already thin start dying early."
+		},
+		"estirar": {
+			"nombre": "The hive stretches food to 10 years",
+			"resumen": "They ration so the food lasts Koumba’s ten years.",
+			"explicacion": "Koumba tells Carol that, according to the hive itself, most people will starve to death within the next ten years. Here the hive plans ahead: each day it works out the ration that would make the stored food, plus what will keep coming in (fruit, HDP, meat, milk), last the full ten years, never dropping below 60% of what’s needed. Everyone eats less from the start, so hunger comes sooner for the most vulnerable, but the overall collapse is delayed."
+		},
+		"diciembre": {
+			"nombre": "Joining in December",
+			"resumen": "Right after the northern harvest: full granaries.",
+			"explicacion": "The canon doesn’t say when the Joining happened, and the world’s stored grain varies a lot with the harvest calendar: there are ~1,385 million tonnes on July 1 and ~2,185 on December 1. With the Joining in December, the hive starts out with about 200 more days of food. Everything else is the same as canon."
+		},
+		"ganado": {
+			"nombre": "Feed the livestock",
+			"resumen": "The animals aren’t released: they eat the same grain as people.",
+			"explicacion": "In the show, the hive releases the livestock: Kusimayu’s fellow villagers set theirs free when they join. Here, so as not to let the animals starve, the hive keeps feeding them as before. But livestock today eat ~1,100 million tonnes of cereal a year, more than people eat directly, so the stored food lasts half as long (from ~589 to ~288 days). In exchange, more animals die on farms and their meat is put to better use."
+		},
+		"resquicios": {
+			"nombre": "With loopholes",
+			"resumen": "Generous readings of the rule: births, eggs, honey and grain from dead plants.",
+			"explicacion": "The rule is not to kill or harm, but some things might fit within it: letting livestock keep giving birth so the milk never runs out, collecting eggs and honey (to that end, the hive keeps feeding the livestock), gathering grain from crops that were already planted once the plant dies on its own at maturity (70% of what would have been harvested) and, from the second year on, sowing and gathering only once the plant has dried up (50% of a normal harvest). It isn’t canon: in the video, Cena says they can’t harvest wheat or corn or rice. It shows that the problem is the rules, not the food."
+		}
+	},
+	"escenario": {
+		"titulo": "Scenario",
+		"guardado": "saved",
+		"modificado": "modified",
+		"que_cambia": "What changes from canon",
+		"nada": "Nothing: this is the baseline the other scenarios are compared against.",
+		"movido": "You moved levers after loading it: the list already includes your changes."
+	},
+	"guardar": {
+		"boton": "Save",
+		"titulo": "Save scenario",
+		"descripcion": "Only the levers you moved from canon are saved.",
+		"nombre": "Name",
+		"nombre_ejemplo": "E.g. June with milk and eggs",
+		"explicacion": "What is this scenario?",
+		"explicacion_ejemplo": "What you’re assuming and why it’s worth a look",
+		"explicacion_ayuda": "Required. I’ve left you a draft of what changes; put it in your own words.",
+		"cancelar": "Cancel",
+		"guardando": "Saving…",
+		"error": "Couldn’t save: {detalle}",
+		"borrador_igual": "Same as canon: it doesn’t move any lever.",
+		"borrador": "Starts from {partida}. Changes: {cambios}.",
+		"partida_canon": "canon",
+		"partida_otro": "“{nombre}”"
+	},
+	"palancas": {
+		"por_mes": "By month",
+		"automatico": "automatic",
+		"si": "Yes",
+		"no": "No"
+	},
+	"opciones": {
+		"completa": "Full",
+		"fija": "Fixed",
+		"estirar": "Stretch",
+		"liberar": "Release",
+		"alimentar": "Feed"
+	},
+	"simulador": {
+		"error_api": "Couldn’t reach the API at {url}. Is plur1bus-api running? ({detalle})",
+		"simulando": "Simulating…",
+		"hero": {
+			"empieza": "Famine begins in",
+			"detalle": "{fecha}: the day hunger starts killing more people than all other causes combined. At the start there {dias, plural, one {was # day} other {were # days}} of stored food.",
+			"sin_etiqueta": "In {anios, plural, one {# year} other {# years}}",
+			"sin_valor": "no famine",
+			"sin_detalle": "There’s enough food for everyone in this scenario."
+		},
+		"kpi": {
+			"mitad": "Population halved",
+			"nunca": "Never",
+			"mitad_detalle": "{duracion} after the Joining",
+			"en_anios": "in {anios, plural, one {# year} other {# years}}",
+			"diez": "Population at 10 years",
+			"diez_detalle": "{pct} of the hive",
+			"carga": "Carrying capacity",
+			"carga_detalle": "long term: average over years {desde} to {hasta}",
+			"koumba": "Is Koumba right?",
+			"si": "Yes",
+			"no": "No",
+			"koumba_detalle": "{pct} starve to death within 10 years"
+		},
+		"graficas": {
+			"poblacion": "Hive population",
+			"poblacion_sub": "People alive at the end of each week",
+			"poblacion_serie": "Population",
+			"hambruna": "Famine begins",
+			"fuentes": "Where the food comes from",
+			"fuentes_sub": "kcal consumed per day, by source",
+			"cuerpo": "Ration and body reserve",
+			"cuerpo_sub": "Ration: what people eat compared with their normal requirement. Reserve: what the average body has left.",
+			"racion": "Ration",
+			"reserva": "Body reserve"
+		},
+		"grupos": {
+			"cereal": "Cereals",
+			"inventario": "Other stocks",
+			"frescos": "Fresh food and windfall fruit",
+			"hdp": "HDP",
+			"carne": "Animal meat"
+		},
+		"tabla": {
+			"titulo": "Everything eaten in {anios, plural, one {# year} other {# years}}",
+			"fuente": "Source",
+			"inicio": "At the start",
+			"consumido": "Consumed",
+			"parte": "Share of the diet",
+			"bill_kcal": "{n} trillion kcal"
+		}
+	},
+	"grafica": {
+		"ver_tabla": "View table",
+		"ver_grafica": "View chart",
+		"escala_log": "Log scale",
+		"escala_lineal": "Linear scale",
+		"semana": "Week",
+		"total": "Total",
+		"aria": "{titulo}. Use the arrow keys to move through the weeks."
+	},
+	"numeros": {
+		"miles_de_millones": "{n} billion",
+		"millones": "{n} million",
+		"miles": "{n} thousand",
+		"abrev_millones": "{n}M",
+		"abrev_miles": "{n}K",
+		"billones": "{n} trillion"
+	},
+	"duracion": {
+		"dias": "{n, plural, one {# day} other {# days}}",
+		"meses": "{n, plural, one {# month} other {# months}}",
+		"anios": "{n, plural, one {# year} other {# years}}",
+		"y": "{a} and {b}"
+	},
+	"supuestos": {
+		"titulo": "Model assumptions",
+		"intro": "Every number the engine uses, with the range you can explore and the sources behind it.",
+		"buscar": "Search (e.g. cereal, hdp, dogs)",
+		"valores": "Values",
+		"col_supuesto": "Assumption",
+		"col_valor": "Value",
+		"col_rango": "Range",
+		"col_unidad": "Unit",
+		"col_fuentes": "Sources",
+		"rango": "{bajo} to {alto}",
+		"sin_fuente": "no source yet",
+		"confianza": {
+			"high": "high",
+			"medium": "medium",
+			"low": "low"
+		},
+		"tablas": "Monthly tables",
+		"col_tabla": "Table",
+		"ganado": "Livestock",
+		"col_grupo": "Group",
+		"col_cabezas": "Head",
+		"col_kcal_cabeza": "Edible kcal per head",
+		"col_vida": "Natural lifespan (days)",
+		"col_pienso": "Feed (kcal/day)",
+		"col_pastoreo": "Grazing",
+		"cargando": "Loading…",
+		"error": "Couldn’t read the assumptions from {url} ({detalle})"
+	},
+	"canon": {
+		"titulo": "What the canon says",
+		"intro": "The hive can’t kill, harm or interfere with any form of life, plants included. It eats what already existed, fruit that falls on its own, animals that die naturally and the HDP from humans who die.",
+		"error": "Couldn’t read the data from {url} ({detalle})",
+		"hdp_titulo": "The HDP math doesn’t add up",
+		"cifra_mt": "{desde}–{hasta} Mt",
+		"hdp_necesario": "of HDP a day would be needed if everyone drank the canon drink (8 half-pints at 8–12%)",
+		"cifra_miles_t": "{n} thousand t",
+		"hdp_disponible": "is what daily deaths provide: {desde}–{hasta}% of what’s needed",
+		"cifra_dias_rango": "{desde}–{hasta} days",
+		"hdp_union": "is how long the bodies from the Joining would last for that drink",
+		"cifra_dias": "{n} days",
+		"hdp_mundo": "of food for the whole world is what the {muertos} dead of the Joining amount to, in calories",
+		"hdp_nota": "Each body feeds one person for about {dias, plural, one {# day} other {# days}}. In calories, HDP is almost symbolic: it works as protein for a minority, not as the basis of the diet.",
+		"hechos": "Canon facts",
+		"en_modelo": "In the model: {texto}",
+		"sin_hechos": "The researched canon facts appear here as soon as the source set is loaded into the API."
+	}
+}

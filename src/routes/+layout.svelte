@@ -2,13 +2,30 @@
   // Tailwind v4 + tokens de shadcn. El gradiente glass de :global(body) de abajo GANA:
   // los estilos :global de Svelte van sin @layer, así que pisan el @layer base de Tailwind.
   import '../app.css';
+  // Único bootstrap de svelte-i18n: registra los diccionarios e inicializa.
+  import { aplicarIdiomaAlDocumento } from '$lib/i18n';
+  import { locale } from 'svelte-i18n';
+  import { browser } from '$app/environment';
   import type { Snippet } from 'svelte';
+  import type { LayoutData } from './$types';
   import favicon from '$lib/assets/favicon.svg';
   import TopNav from '$lib/TopNav.svelte';
   import Sidebar from '$lib/Sidebar.svelte';
 
-  let { children }: { children: Snippet } = $props();
+  let { children, data }: { children: Snippet; data: LayoutData } = $props();
   let collapsed = $state(false);
+
+  // El idioma que el servidor resolvió para ESTA request se fija aquí, en el
+  // cuerpo del script, que durante el SSR corre de forma síncrona como parte del
+  // render. El store `locale` de svelte-i18n es de MÓDULO (compartido por todas las
+  // requests): fijarlo desde un load() asíncrono dejaría que otra request se colara.
+  // svelte-ignore state_referenced_locally
+  locale.set(data.idioma);
+
+  // En el navegador, el <html lang> y la dirección siguen al idioma elegido.
+  $effect(() => {
+    if (browser && $locale) aplicarIdiomaAlDocumento($locale);
+  });
 
   // View Transitions cuando el browser las soporta para animar el repliegue.
   function withTransition(fn: () => void) {
@@ -84,7 +101,7 @@
   main {
     position: fixed;
     top: calc(2rem + var(--topnav-height));
-    right: 1rem;
+    inset-inline-end: 1rem;
     bottom: 1rem;
     box-sizing: border-box;
     background: rgba(255, 255, 255, 0.012);
@@ -96,11 +113,12 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.08),
       0 4px 16px rgba(0, 0, 0, 0.12);
     overflow: hidden;
-    transition: left 0.22s ease-out;
-    left: calc(var(--sidebar-width, 240px) + 2rem);
+    /* lógicas: en árabe la sidebar va a la derecha y el panel se recorre con ella */
+    transition: inset-inline-start 0.22s ease-out;
+    inset-inline-start: calc(var(--sidebar-width, 240px) + 2rem);
   }
   main.collapsed {
-    left: 2rem;
+    inset-inline-start: 2rem;
   }
 
   .work-scroll {

@@ -27,6 +27,22 @@ export function ticksAnio(fechas: string[], maxEtiquetas = 8): { i: number; etiq
 	return cambios.filter((_, k) => k % salto === 0);
 }
 
+let medidor: CanvasRenderingContext2D | null | undefined;
+
+/**
+ * Margen izquierdo que necesitan las etiquetas del eje Y (texto de 11px pegado
+ * al eje con 10px de hueco). En árabe, alemán o francés las cifras llevan
+ * palabras ("8,000 مليون", "8.000 Mio.") y no caben en un margen fijo.
+ */
+export function margenEje(etiquetas: string[], minimo = 40): number {
+	if (medidor === undefined && typeof document !== 'undefined') {
+		medidor = document.createElement('canvas').getContext('2d');
+		if (medidor) medidor.font = `11px ${getComputedStyle(document.body).fontFamily}`;
+	}
+	const ancho = Math.max(0, ...etiquetas.map((e) => (medidor ? medidor.measureText(e).width : e.length * 6.5)));
+	return Math.max(minimo, Math.ceil(ancho) + 16);
+}
+
 /** Filas muestreadas para la vista de tabla: una cada `cada` puntos, más la última. */
 export function filasMuestreadas(n: number, cada: number): number[] {
 	const filas = [];
