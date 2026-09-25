@@ -66,7 +66,9 @@
 		"modificado": "modified",
 		"que_cambia": "What changes from canon",
 		"nada": "Nothing: this is the baseline the other scenarios are compared against.",
-		"movido": "You moved levers after loading it: the list already includes your changes."
+		"movido": "You moved levers after loading it: the list already includes your changes.",
+		"divisor": "Scenario panel width",
+		"divisor_ayuda": "Drag to resize; double-click to reset"
 	},
 	"guardar": {
 		"boton": "Save",

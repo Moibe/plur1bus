@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { _, locale } from 'svelte-i18n';
 	import GraficaApilada from '$lib/charts/GraficaApilada.svelte';
 	import GraficaLineas from '$lib/charts/GraficaLineas.svelte';
@@ -6,10 +7,40 @@
 	import Palancas from '$lib/components/Palancas.svelte';
 	import GuardarEscenario from '$lib/components/GuardarEscenario.svelte';
 	import ExplicacionEscenario from '$lib/components/ExplicacionEscenario.svelte';
+	import Divisor from '$lib/components/Divisor.svelte';
 	import { obtenerEscenario, simular, API_URL } from '$lib/api';
 	import { estado } from '$lib/estado.svelte';
 	import { formato } from '$lib/formato';
 	import type { Resultado } from '$lib/tipos';
+
+	// Ancho del panel del escenario: se cambia arrastrando el divisor y se recuerda
+	// en este navegador. Los resultados nunca quedan más angostos que MIN_RESULTADOS.
+	const ANCHO_PANEL = 340;
+	const MIN_PANEL = 260;
+	const MIN_RESULTADOS = 380;
+	const DIVISOR = 16;
+	const CLAVE_ANCHO = 'plur1bus:ancho-panel';
+	let anchoPanel = $state(ANCHO_PANEL);
+	let anchoSimulador = $state(0);
+	// antes de medir (en el servidor) no hay tope: así el SSR ya sale con el ancho de siempre
+	const maxPanel = $derived(anchoSimulador ? Math.max(MIN_PANEL, anchoSimulador - DIVISOR - MIN_RESULTADOS) : 720);
+	const panel = $derived(Math.min(maxPanel, Math.max(MIN_PANEL, anchoPanel)));
+
+	onMount(() => {
+		try {
+			const guardado = Number(localStorage.getItem(CLAVE_ANCHO));
+			if (guardado > 0) anchoPanel = guardado;
+		} catch {
+			// sin almacenamiento (modo privado): se queda el ancho de siempre
+		}
+	});
+	function recordarAncho(ancho: number) {
+		try {
+			localStorage.setItem(CLAVE_ANCHO, String(ancho));
+		} catch {
+			// sin almacenamiento: el ancho dura lo que dure la página
+		}
+	}
 
 	let resultado = $state<Resultado | null>(null);
 	let cargando = $state(false);
@@ -121,8 +152,8 @@
 	const billones = (kcal: number) => $_('simulador.tabla.bill_kcal', { values: { n: f.numero(kcal / 1e12) } });
 </script>
 
-<div class="simulador">
-	<aside class="panel-palancas">
+<div class="simulador" bind:clientWidth={anchoSimulador} style="--ancho-panel: {panel}px">
+	<aside class="panel-palancas" id="panel-escenario">
 		<header class="panel-titulo">
 			<h2>{$_('escenario.titulo')}</h2>
 			<GuardarEscenario />
@@ -132,6 +163,15 @@
 			<Palancas esquema={estado.esquema} bind:valores={estado.valores} />
 		{/if}
 	</aside>
+
+	<Divisor
+		bind:ancho={anchoPanel}
+		min={MIN_PANEL}
+		max={maxPanel}
+		original={ANCHO_PANEL}
+		controla="panel-escenario"
+		alCambiar={recordarAncho}
+	/>
 
 	<section class="resultados" class:cargando>
 		{#if error}
@@ -245,8 +285,7 @@
 <style>
 	.simulador {
 		display: grid;
-		grid-template-columns: minmax(280px, 340px) 1fr;
-		gap: 1rem;
+		grid-template-columns: var(--ancho-panel, 340px) 1rem 1fr;
 		height: 100%;
 	}
 	.panel-palancas,
@@ -257,7 +296,6 @@
 	.panel-palancas {
 		padding-block: 0.25rem 1rem;
 		padding-inline: 0.25rem 0.9rem;
-		border-inline-end: 1px solid rgba(255, 255, 255, 0.1);
 	}
 	.panel-titulo {
 		display: flex;
@@ -327,8 +365,11 @@
 			overflow: visible;
 		}
 		.panel-palancas {
-			border-inline-end: none;
 			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+		}
+		/* en una sola columna no hay nada que redimensionar */
+		.simulador :global(.divisor) {
+			display: none;
 		}
 	}
 </style>

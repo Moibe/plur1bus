@@ -66,7 +66,9 @@
 		"modificado": "modificado",
 		"que_cambia": "O que muda em relação ao cânone",
 		"nada": "Nada: é a base com a qual os outros cenários são comparados.",
-		"movido": "Você moveu alavancas depois de carregá-lo: a lista já inclui suas mudanças."
+		"movido": "Você moveu alavancas depois de carregá-lo: a lista já inclui suas mudanças.",
+		"divisor": "Largura do painel do cenário",
+		"divisor_ayuda": "Arraste para mudar a largura; clique duas vezes para restaurar"
 	},
 	"guardar": {
 		"boton": "Salvar",
